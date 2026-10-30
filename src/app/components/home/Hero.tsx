@@ -87,7 +87,7 @@ export default function HeroSection() {
     <section
       id="home"
       aria-label="Featured reading"
-      className="relative isolate mx-auto mt-10 w-[90%] overflow-hidden rounded-[28px] border border-[var(--primary)]/10 bg-[var(--primary-bg)] px-6 pb-8 pt-20  sm:px-10 sm:pt-20 lg:pb-10 lg:pt-20"
+      className="relative isolate mx-auto mt-10 w-[90%] overflow-hidden rounded-[28px] bg-[var(--primary-bg)] px-6 pb-8 pt-20  sm:px-10 sm:pt-20 lg:pb-10 lg:pt-20"
     >
       {/* Decorative Circular Curve */}
       <div
