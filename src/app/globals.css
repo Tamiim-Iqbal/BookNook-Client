@@ -1,26 +1,133 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
+@custom-variant dark (&:is(.dark *));
+
+/* Theme Variables */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand Colors */
+  --primary: #193a32;
+  --primary-hover: #2b5045;
+
+  --secondary: #873847;
+  --secondary-hover: #702c3b;
+
+  --accent: #ac927b;
+
+  /* Section Backgrounds */
+  --main-bg: #FCFAF7;
+  --primary-bg: #FFFFFF;
+  --secondary-bg: #F1ECE6;
+
+  /* Surface */
+  --surface: #FEFDFC;
+  
+
+  /* Text Colors */
+  --text-primary: #142f27;
+  --text-secondary: #52675e;
+  --text-muted: #748078;
+
+  /* Borders */
+  --border: rgba(25, 58, 50, 0.13);
 }
 
+/* Global Fonts */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-dm-sans);
+  --font-serif: var(--font-playfair);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--main-bg);
+  color: var(--text-primary);
+  font-family: var(--font-dm-sans), sans-serif;
+}
+
+/* Hero Image Shapes */
+
+/* Classic */
+.hero-classic .hero-image-frame {
+  border-radius: 48% 48% 2px 2px;
+}
+
+/* Split */
+.hero-split .hero-image-frame {
+  right: 5%;
+  width: 73%;
+  height: 84%;
+  border-radius: 2px;
+}
+
+/* Editorial */
+.hero-editorial .hero-image-frame {
+  top: 10px;
+  right: 2%;
+  width: 78%;
+  height: 90%;
+  border-radius: 50% 50% 50% 0;
+}
+
+/* Hero Animations */
+@keyframes heroCopy {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroVisual {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-hero-copy {
+  animation: heroCopy 0.7s both ease;
+}
+
+.animate-hero-visual {
+  animation: heroVisual 0.8s both ease;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .hero-classic .hero-image-frame {
+    width: 91%;
+    height: 84%;
+  }
+
+  .hero-split .hero-image-frame,
+  .hero-editorial .hero-image-frame {
+    width: 85%;
+    height: 84%;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-hero-copy,
+  .animate-hero-visual {
+    animation: none;
+  }
 }
