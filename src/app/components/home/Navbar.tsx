@@ -48,22 +48,21 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b backdrop-blur-md transition-colors duration-200 ${
-        isScrolled
-          ? "border-[var(--border)]"
-          : "border-transparent"
-      }`}
+      className={`sticky top-0 z-50 border-b transition-all duration-200 ${isScrolled
+          ? "border-[var(--border)] bg-[var(--main-bg)]"
+          : "border-transparent bg-[var(--main-bg)]"
+        }`}
     >
       <nav className="relative mx-auto flex h-18 w-[90%] max-w-[1440px] items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
           <BookOpen
-            size={27}
+            size={35}
             strokeWidth={2.2}
-            className="text-[var(--primary)]"
+            className="text-white bg-[var(--primary-hover)] p-2 rounded-md"
           />
 
-          <div className="text-2xl font-bold tracking-tight text-[var(--primary)]">
+          <div className="text-2xl font-bold tracking-tight text-[var(--primary-hover)]">
             <span>Book</span>
             <span className="text-[var(--secondary)]">Nook</span>
           </div>

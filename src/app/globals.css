@@ -18,11 +18,15 @@
   /* Section Backgrounds */
   --main-bg: #FCFAF7;
   --primary-bg: #FFFFFF;
-  --secondary-bg: #F1ECE6;
+  --secondary-bg: #E8EEE8;
 
   /* Surface */
   --surface: #FEFDFC;
-  
+
+  /* Additional Background */
+  --tertiary-bg: #F1ECE6;
+  /* 4th: Warm Beige */
+
 
   /* Text Colors */
   --text-primary: #142f27;
