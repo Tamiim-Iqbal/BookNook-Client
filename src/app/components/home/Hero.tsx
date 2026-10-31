@@ -19,9 +19,7 @@ const slides = [
       <>
         Build Your{" "}
         <br />
-        <span className="text-[var(--secondary)]">
-          Own Library.
-        </span>
+        <span className="text-[var(--secondary)]">Own Library.</span>
       </>
     ),
     description:
@@ -35,9 +33,7 @@ const slides = [
     title: (
       <>
         Borrow Books.{" "}
-        <span className="text-[var(--secondary)]">
-          Read More.
-        </span>
+        <span className="text-[var(--secondary)]">Read More.</span>
       </>
     ),
     description:
@@ -51,9 +47,7 @@ const slides = [
     title: (
       <>
         Share Books.{" "}
-        <span className="text-[var(--secondary)]">
-          Grow Together.
-        </span>
+        <span className="text-[var(--secondary)]">Grow Together.</span>
       </>
     ),
     description:
@@ -64,7 +58,7 @@ const slides = [
   },
 ];
 
-export default function HeroSection() {
+const HeroSection = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [activeSlide, setActiveSlide] = useState(0);
 
@@ -132,7 +126,7 @@ export default function HeroSection() {
                     </h1>
 
                     {/* Description */}
-                    <p className="mt-5 min-h-[5.4em] max-w-[460px] text-[14px] leading-[1.8] text-[var(--text-secondary)] sm:text-[16px] font-medium">
+                    <p className="mt-5 min-h-[5.4em] max-w-[460px] text-[14px] font-medium leading-[1.8] text-[var(--text-secondary)] sm:text-[16px]">
                       {slide.description}
                     </p>
 
@@ -140,7 +134,7 @@ export default function HeroSection() {
                     <div className="mt-7">
                       <Link
                         href="#books"
-                        className="inline-flex h-[48px] items-center gap-4 border border-[var(--secondary)] bg-[var(--secondary)] px-7 text-[13px] font-semibold tracking-wide text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--secondary-hover)] hover:bg-[var(--secondary-hover)] rounded-lg"
+                        className="inline-flex h-[48px] items-center gap-4 rounded-lg border border-[var(--secondary)] bg-[var(--secondary)] px-7 text-[13px] font-semibold tracking-wide text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--secondary-hover)] hover:bg-[var(--secondary-hover)]"
                       >
                         Browse books
                         <ArrowUpRight size={18} />
@@ -166,6 +160,7 @@ export default function HeroSection() {
                         alt={slide.credit}
                         loading={index === 0 ? "eager" : "lazy"}
                         fetchPriority={index === 0 ? "high" : "auto"}
+                        decoding="async"
                         className="h-full w-full object-cover transition-transform duration-1000 hover:scale-105"
                       />
 
@@ -173,9 +168,7 @@ export default function HeroSection() {
                     </div>
 
                     {/* Floating Editor Note */}
-                    <div className="absolute bottom-4 left-0 z-20 w-[235px] border border-[var(--primary)]/10 bg-[var(--main-bg)] p-5 sm:w-[270px] sm:p-[26px] rounded-md shadow-sm font-medium">
-                      
-
+                    <div className="absolute bottom-4 left-0 z-20 w-[235px] rounded-md border border-[var(--primary)]/10 bg-[var(--main-bg)] p-5 font-medium shadow-sm sm:w-[270px] sm:p-[26px]">
                       <p className="mt-2 text-[15px] italic leading-relaxed text-[var(--primary)]">
                         A book is a quiet place where the world becomes larger.
                       </p>
@@ -215,4 +208,6 @@ export default function HeroSection() {
       </div>
     </section>
   );
-}
+};
+
+export default HeroSection;
