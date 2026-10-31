@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Hero from "./components/home/Hero";
+import BookQuote from "./components/home/BookQuote";
 import Books from "./books/page";
 
 export default function Home() {
@@ -7,6 +7,7 @@ export default function Home() {
     <div>
       <Hero />
       <Books />
+      <BookQuote />
     </div>
   );
 }
