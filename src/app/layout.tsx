@@ -19,7 +19,7 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "BookNook - Your Personal Library",
+  title: "BookNook | Your Personal Library",
   description: "Discover thoughtful reads and timeless classics.",
 };
 
