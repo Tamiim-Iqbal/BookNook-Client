@@ -2,7 +2,7 @@ const BookQuote = () => {
   return (
     <section
       aria-label="Book quote"
-      className="bg-[var(--main-bg)] px-6 py-6 sm:px-10 sm:py-20 lg:py-24"
+      className="bg-[var(--main-bg)] px-6 py-6 sm:px-10 sm:pt-20 lg:pt-24"
     >
       <div className="mx-auto max-w-5xl text-center">
         <div
