@@ -3,7 +3,10 @@ import { Book } from "@/types/book";
 import BookCard from "../components/books/BookCard";
 
 const Books = async () => {
-  const response = await fetch("http://localhost:5001/books/latest");
+  const response = await fetch(
+  `${process.env.BACKEND_API_URL}/books/latest`,
+  { cache: "no-store" }
+);
   const books: Book[] = await response.json();
 
   return (
