@@ -49,20 +49,20 @@ export default function Navbar() {
   return (
     <header
       className={`sticky top-0 z-50 border-b transition-all duration-200 ${isScrolled
-          ? "border-[var(--border)] bg-[var(--main-bg)]"
-          : "border-transparent bg-[var(--main-bg)]"
+        ? "border-[var(--border)] bg-[var(--main-bg)]"
+        : "border-transparent bg-[var(--main-bg)]"
         }`}
     >
-      <nav className="relative mx-auto flex h-18 w-[90%] max-w-[1440px] items-center justify-between">
+      <nav className="relative mx-auto flex h-18 w-full max-w-[1440px] items-center justify-between px-4 sm:w-[90%] sm:px-0">
         {/* Logo */}
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
           <BookOpen
-            size={35}
+            size={30}
             strokeWidth={2.2}
-            className="text-white bg-[var(--primary-hover)] p-2 rounded-md"
+            className="text-white bg-[var(--primary-hover)] p-1 md:p-2 rounded-md md:size-[35px]"
           />
 
-          <div className="text-2xl font-bold tracking-tight text-[var(--primary-hover)]">
+          <div className="text-lg md:text-2xl font-bold tracking-tight text-[var(--primary)]">
             <span>Book</span>
             <span className="text-[var(--secondary)]">Nook</span>
           </div>
@@ -82,7 +82,7 @@ export default function Navbar() {
         </div>
 
         {/* Right Actions */}
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="flex shrink-0 items-center gap-0 md:gap-3">
           {/* Sign In */}
           <Link
             href="/sign-in"
@@ -96,7 +96,8 @@ export default function Navbar() {
             href="/sign-up"
             className="inline-flex h-[46px] items-center gap-3 rounded-lg border border-[var(--secondary)] bg-[var(--secondary)] px-4 text-[14px] font-semibold tracking-wide text-white transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--secondary-hover)] hover:bg-[var(--secondary-hover)]"
           >
-            Join the Library
+            <span className="md:hidden">Join</span>
+            <span className="hidden md:inline">Join the Library</span>
           </Link>
         </div>
       </nav>

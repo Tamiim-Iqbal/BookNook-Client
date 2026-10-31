@@ -1,6 +1,8 @@
+
 import type { Metadata } from "next";
 import { DM_Sans, Playfair_Display } from "next/font/google";
 import "./globals.css";
+
 import Navbar from "./components/home/Navbar";
 import Footer from "./components/home/Footer";
 
@@ -27,16 +29,17 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${playfairDisplay.variable} h-full antialiased`}
+      className={`${dmSans.variable} ${playfairDisplay.variable} min-h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col font-sans">
-        <Navbar/>
-        <div>
+      <body className="flex min-h-screen w-full min-w-0 flex-col font-sans">
+        <Navbar />
+
+        <main className="w-full min-w-0 flex-1">
           {children}
-        </div>
-        <Footer/>
+        </main>
+
+        <Footer />
       </body>
-      
     </html>
   );
 }
