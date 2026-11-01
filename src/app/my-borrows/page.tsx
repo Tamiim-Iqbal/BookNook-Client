@@ -1,8 +1,6 @@
-
 "use client";
 
-import React from "react";
-import { CalendarDays, RotateCcw } from "lucide-react";
+import { CalendarDays, RotateCcw, BookOpen } from "lucide-react";
 
 const borrowedBooks = [
   {
@@ -75,6 +73,7 @@ const MyBorrows = () => {
             <h2 className="font-serif text-2xl font-bold text-[var(--text-primary)] sm:text-3xl">
               Borrowed Books
             </h2>
+
             <p className="mt-1.5 text-sm text-[var(--text-muted)]">
               Manage your borrowed books and return them on time.
             </p>
@@ -85,101 +84,130 @@ const MyBorrows = () => {
           </span>
         </div>
 
-        {/* Table */}
-        <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[800px] border-collapse text-left">
-              {/* Table Header */}
-              <thead>
-                <tr className="border-b border-[var(--border)] bg-[var(--main-bg)]">
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
-                    Book
-                  </th>
+        {/* Books Table / Empty State */}
+        {borrowedBooks.length > 0 ? (
+          <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[800px] border-collapse text-left">
+                {/* Table Header */}
+                <thead>
+                  <tr className="border-b border-[var(--border)] bg-[var(--main-bg)]">
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
+                      Book
+                    </th>
 
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
-                    Title
-                  </th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
+                      Title
+                    </th>
 
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
-                    Borrow Date
-                  </th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
+                      Borrow Date
+                    </th>
 
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
-                    Return Date
-                  </th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
+                      Return Date
+                    </th>
 
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-
-              {/* Table Body */}
-              <tbody>
-                {borrowedBooks.map((book) => (
-                  <tr
-                    key={book.id}
-                    className="border-b border-[var(--border)] transition-colors duration-200 last:border-0 hover:bg-[var(--main-bg)]"
-                  >
-                    {/* Book Image */}
-                    <td className="px-6 py-4">
-                      <div className="h-[68px] w-[52px] overflow-hidden rounded-lg bg-[var(--main-bg)]">
-                        <img
-                          src={book.image}
-                          alt={book.title}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                    </td>
-
-                    {/* Book Title */}
-                    <td className="px-6 py-4">
-                      <p className="text-sm font-semibold text-[var(--text-primary)]">
-                        {book.title}
-                      </p>
-                      <p className="mt-1 text-xs text-[var(--text-muted)]">
-                        By {book.author}
-                      </p>
-                    </td>
-
-                    {/* Borrow Date */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 whitespace-nowrap text-sm text-[var(--text-secondary)]">
-                        <CalendarDays
-                          size={15}
-                          className="shrink-0 text-[var(--secondary)]"
-                        />
-                        {book.borrowDate}
-                      </div>
-                    </td>
-
-                    {/* Return Date */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 whitespace-nowrap text-sm text-[var(--text-secondary)]">
-                        <CalendarDays
-                          size={15}
-                          className="shrink-0 text-[var(--secondary)]"
-                        />
-                        {book.returnDate}
-                      </div>
-                    </td>
-
-                    {/* Action */}
-                    <td className="px-6 py-4">
-                      <button
-                        type="button"
-                        className="flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-[var(--secondary)] bg-[var(--secondary)] px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90"
-                      >
-                        <RotateCcw size={14} />
-                        Return Book
-                      </button>
-                    </td>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
+                      Action
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+
+                {/* Table Body */}
+                <tbody>
+                  {borrowedBooks.map((book) => (
+                    <tr
+                      key={book.id}
+                      className="border-b border-[var(--border)] transition-colors duration-200 last:border-0 hover:bg-[var(--main-bg)]"
+                    >
+                      {/* Book Image */}
+                      <td className="px-6 py-4">
+                        <div className="h-[68px] w-[52px] overflow-hidden rounded-lg bg-[var(--main-bg)]">
+                          <img
+                            src={book.image}
+                            alt={book.title}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                      </td>
+
+                      {/* Book Title */}
+                      <td className="px-6 py-4">
+                        <p className="text-sm font-semibold text-[var(--text-primary)]">
+                          {book.title}
+                        </p>
+
+                        <p className="mt-1 text-xs text-[var(--text-muted)]">
+                          By {book.author}
+                        </p>
+                      </td>
+
+                      {/* Borrow Date */}
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2 whitespace-nowrap text-sm text-[var(--text-secondary)]">
+                          <CalendarDays
+                            size={15}
+                            className="shrink-0 text-[var(--secondary)]"
+                          />
+                          {book.borrowDate}
+                        </div>
+                      </td>
+
+                      {/* Return Date */}
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2 whitespace-nowrap text-sm text-[var(--text-secondary)]">
+                          <CalendarDays
+                            size={15}
+                            className="shrink-0 text-[var(--secondary)]"
+                          />
+                          {book.returnDate}
+                        </div>
+                      </td>
+
+                      {/* Action */}
+                      <td className="px-6 py-4">
+                        <button
+                          type="button"
+                          className="flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-[var(--secondary)] bg-[var(--secondary)] px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90"
+                        >
+                          <RotateCcw size={14} />
+                          Return Book
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        ) : (
+          /* Empty State */
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface)] px-5 py-14 text-center shadow-sm sm:py-16">
+            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--primary-bg)]">
+              <BookOpen
+                size={30}
+                className="text-[var(--secondary)]"
+              />
+            </div>
+
+            <h3 className="font-serif text-2xl font-bold text-[var(--text-primary)]">
+              No Borrowed Books Yet!
+            </h3>
+
+            <p className="mt-2 max-w-[380px] text-sm leading-6 text-[var(--text-muted)]">
+              You haven&apos;t borrowed any books yet. Explore our library
+              and discover your next favourite read!
+            </p>
+
+            <a
+              href="/books"
+              className="mt-6 rounded-lg border border-[var(--secondary)] bg-[var(--secondary)] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90"
+            >
+              Explore Books
+            </a>
+          </div>
+        )}
       </section>
     </main>
   );
