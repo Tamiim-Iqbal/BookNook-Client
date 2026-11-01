@@ -1,7 +1,9 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { BookOpen, Menu, X } from "lucide-react";
 
 const links = [
@@ -13,6 +15,8 @@ const links = [
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -61,15 +65,23 @@ export default function Navbar() {
 
         {/* Desktop Navigation */}
         <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 lg:flex">
-          {links.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className="whitespace-nowrap text-[14px] font-medium text-(--primary) transition-colors duration-200 hover:text-(--secondary)"
-            >
-              {link.name}
-            </Link>
-          ))}
+          {links.map((link) => {
+            const isActive = pathname === link.href;
+
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={`whitespace-nowrap text-[14px] font-medium transition-colors duration-200 ${
+                  isActive
+                    ? "text-(--secondary)"
+                    : "text-(--primary) hover:text-(--secondary)"
+                }`}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Right Actions */}
@@ -77,7 +89,7 @@ export default function Navbar() {
           {/* Sign In */}
           <Link
             href="/sign-in"
-            className="inline-flex py-1 md:py-2.5 items-center rounded-lg border border-transparent px-3 text-[14px] font-semibold tracking-wide text-(--primary) transition-all duration-300 hover:-translate-y-0.5 hover:border-(--secondary-hover)/90 hover:bg-(--main-bg) hover:text-(--secondary) sm:px-5"
+            className="inline-flex items-center rounded-lg border border-transparent px-3 py-1 text-[14px] font-semibold tracking-wide text-(--primary) transition-all duration-300 hover:-translate-y-0.5 hover:border-(--secondary-hover)/90 hover:bg-(--main-bg) hover:text-(--secondary) md:py-2.5 sm:px-5"
           >
             Sign In
           </Link>
@@ -85,7 +97,7 @@ export default function Navbar() {
           {/* Join the Library */}
           <Link
             href="/sign-up"
-            className="inline-flex py-1 md:py-2.5 items-center gap-3 rounded-lg border border-(--secondary) bg-(--secondary) px-3 text-[14px] font-semibold tracking-wide text-white transition-all duration-300 hover:-translate-y-0.5 hover:border-(--secondary-hover) hover:bg-(--secondary-hover) sm:px-3"
+            className="inline-flex items-center gap-3 rounded-lg border border-(--secondary) bg-(--secondary) px-3 py-1 text-[14px] font-semibold tracking-wide text-white transition-all duration-300 hover:-translate-y-0.5 hover:border-(--secondary-hover) hover:bg-(--secondary-hover) md:py-2.5 sm:px-3"
           >
             <span className="md:hidden">Join</span>
             <span className="hidden md:inline">Join the Library</span>
@@ -112,16 +124,24 @@ export default function Navbar() {
         }`}
       >
         <div className="mx-auto grid w-[calc(100%-24px)] grid-cols-3 gap-2 py-4 sm:w-[90%]">
-          {links.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              onClick={() => setIsMenuOpen(false)}
-              className="flex items-center justify-center rounded-lg border border-(--border) bg-(--surface) px-3 py-3 text-sm font-medium text-(--text-secondary) transition-all duration-200 hover:bg-(--primary-bg) hover:text-(--primary)"
-            >
-              {link.name}
-            </Link>
-          ))}
+          {links.map((link) => {
+            const isActive = pathname === link.href;
+
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                onClick={() => setIsMenuOpen(false)}
+                className={`flex items-center justify-center rounded-lg border px-3 py-3 text-sm font-medium transition-all duration-200 ${
+                  isActive
+                    ? "border-(--secondary) bg-(--secondary)/10 text-(--secondary)"
+                    : "border-(--border) bg-(--surface) text-(--text-secondary) hover:bg-(--primary-bg) hover:text-(--primary)"
+                }`}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </header>
