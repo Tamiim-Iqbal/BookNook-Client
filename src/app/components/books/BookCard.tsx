@@ -43,47 +43,50 @@ export default function BookCard({ book }: BookCardProps) {
             </span>
           </div>
         )}
-
-        {/* Category */}
-        <span className="absolute left-3 top-3 z-20 rounded-md bg-(--primary-hover) px-3 py-1 text-sm font-medium text-white">
-          {book.category}
-        </span>
       </div>
 
       {/* Book Details */}
-      <div className="space-y-1 p-4">
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="line-clamp-1 text-lg font-bold text-(--text-primary) transition-colors group-hover:text-(--secondary)">
-            {book.name}
-          </h3>
+<div className="space-y-2 p-4">
+  {/* Category & Rating */}
+  <div className="flex items-center justify-between gap-2">
+    <span className="rounded-md bg-(--secondary)/10 px-2.5 py-1 text-xs font-semibold text-(--secondary)">
+      {book.category}
+    </span>
 
-          <div className="flex shrink-0 items-center gap-1 text-sm font-medium text-(--text-primary)">
-            <Star
-              size={15}
-              className="fill-(--text-secondary) text-(--text-secondary)"
-            />
-            {book.rating}
-          </div>
-        </div>
+    <div className="flex shrink-0 items-center gap-1 text-sm font-medium text-(--text-primary)">
+      <Star
+        size={15}
+        className="fill-(--secondary) text-(--secondary)"
+      />
+      {book.rating}
+    </div>
+  </div>
 
-        <p className="mb-3 text-sm font-semibold text-(--text-secondary)">
-          by {book.author}
-        </p>
+  {/* Book Name */}
+  <h3 className="line-clamp-1 text-lg font-bold text-(--text-primary) transition-colors group-hover:text-(--secondary)">
+    {book.name}
+  </h3>
 
-        <div className="flex items-center justify-between border-t border-(--border) pt-2">
-          <span className="text-xs font-semibold text-(--text-muted)">
-            Available: {book.copy}
-          </span>
+  {/* Author */}
+  <p className="text-sm font-semibold text-(--text-secondary)">
+    by {book.author}
+  </p>
 
-          <Link
-            href={`/books/${book._id}`}
-            className="inline-flex items-center gap-1.5 rounded-md bg-(--secondary) px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-(--secondary-hover)"
-          >
-            Details
-            <ArrowUpRight size={15} />
-          </Link>
-        </div>
-      </div>
+  {/* Bottom */}
+  <div className="flex items-center justify-between border-t border-(--border) pt-3">
+    <span className="text-xs font-semibold text-(--text-muted)">
+      Available: {book.copy}
+    </span>
+
+    <Link
+      href={`/book-details/${book._id}`}
+      className="inline-flex items-center gap-1.5 rounded-md bg-(--primary-hover) px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-(--primary)"
+    >
+      Details
+      <ArrowUpRight size={15} />
+    </Link>
+  </div>
+</div>
     </article>
   );
 }
