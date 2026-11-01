@@ -68,7 +68,7 @@ const BookDetails = async ({ params }: BookDetailsProps) => {
             <div className="flex flex-col justify-center p-6 sm:p-10 lg:p-12">
               {/* Category & Rating */}
               <div className="mb-5 flex items-center justify-between gap-3">
-                <span className="rounded-md bg-(--secondary)/10 px-2.5 py-1 text-xs font-semibold text-(--secondary)">
+                <span className="rounded-md bg-(--secondary)/15 px-2.5 py-1 text-xs font-semibold text-(--secondary)">
                   {book.category}
                 </span>
 
@@ -111,7 +111,7 @@ const BookDetails = async ({ params }: BookDetailsProps) => {
               {/* Added By & Available Copies */}
               <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {/* Added By */}
-                <div className="rounded-xl border border-(--border) bg-(--secondary-bg) p-4">
+                <div className="rounded-xl border border-(--border) bg-(--main-bg)/60 p-4">
                   <p className="text-xs font-medium text-(--text-muted)">
                     Added By
                   </p>
@@ -126,7 +126,7 @@ const BookDetails = async ({ params }: BookDetailsProps) => {
                 </div>
 
                 {/* Available Copies */}
-                <div className="rounded-xl border border-(--border) bg-(--secondary-bg) p-4">
+                <div className="rounded-xl border border-(--border) bg-(--main-bg)/70 p-4">
                   <p className="text-xs font-medium text-(--text-muted)">
                     Available Copies
                   </p>
@@ -162,7 +162,7 @@ const BookDetails = async ({ params }: BookDetailsProps) => {
                   disabled={!isAvailable}
                   className={`inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold transition-all ${
                     isAvailable
-                      ? "bg-(--primary) text-white hover:bg-(--primary-hover) active:scale-[0.98]"
+                      ? "bg-(--primary) text-white hover:bg-(--primary-hover) active:scale-[0.98] cursor-pointer"
                       : "cursor-not-allowed bg-(--secondary-bg) text-(--text-muted)"
                   }`}
                 >
