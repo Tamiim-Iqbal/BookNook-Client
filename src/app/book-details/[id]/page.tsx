@@ -19,9 +19,9 @@ const BookDetails = async ({ params }: BookDetailsProps) => {
   const { id } = await params;
 
   const response = await fetch(
-    `http://localhost:5001/book-details/${id}`,
-    { cache: "no-store" }
-  );
+  `${process.env.BACKEND_API_URL}/book-details/${id}`,
+  { cache: "no-store" }
+);
 
   if (response.status === 404) {
     notFound();
