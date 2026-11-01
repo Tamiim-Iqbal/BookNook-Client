@@ -16,44 +16,44 @@ const AllBooks = async () => {
 
   return (
     <main className="min-h-screen bg-[var(--main-bg)]">
-      {/* Page Header */}
-      {/* Page Header */}
-<section className="px-0 pt-5 sm:pt-10">
-  <div className="relative mx-auto w-[calc(100%-24px)] overflow-hidden rounded-[24px] bg-[var(--primary-bg)] px-5 py-14 text-center sm:w-[90%] sm:rounded-[28px] sm:px-10 sm:py-20">
+      {/* Hero Section */}
+      <section className="relative isolate mx-auto mt-5 w-[calc(100%-24px)] overflow-hidden rounded-[24px] bg-[var(--primary-bg)] px-5 py-10 sm:mt-10 sm:w-[90%] sm:rounded-[28px] sm:px-10 sm:py-12 lg:py-14">
+        <div className="relative mx-auto max-w-[1320px] text-center">
+          <div className="flex items-center justify-center gap-3 text-[12px] font-bold uppercase tracking-[0.2em] text-[var(--secondary)]">
+            <span className="h-px w-[38px] bg-[var(--secondary)]" />
+            Explore Our Collection
+            <span className="h-px w-[38px] bg-[var(--secondary)]" />
+          </div>
 
-    <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--secondary)]">
-      <BookOpen size={16} />
-      Explore Our Collection
-    </span>
+          <h1 className="mt-4 font-serif text-4xl font-bold tracking-[-0.045em] text-[#102D24] sm:text-5xl">
+            Discover All <span className="text-[var(--secondary)]">Books.</span>
+          </h1>
 
-    <h1 className="font-serif text-4xl font-bold leading-tight text-[var(--text-primary)] sm:text-5xl lg:text-6xl">
-      Discover All Books
-    </h1>
+          <p className="mx-auto mt-4 max-w-[550px] text-sm font-medium leading-[1.8] text-[var(--text-secondary)] sm:text-[15px]">
+            Explore a world of stories, knowledge, and inspiration. Find your
+            next favorite book from our growing collection.
+          </p>
 
-    <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-[var(--text-secondary)] sm:text-base font-medium">
-      Explore a world of stories, knowledge, and inspiration.
-      Find your next favorite book from our growing collection.
-    </p>
+          <div className="mt-6 inline-flex items-center gap-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5">
+            <BookOpen size={19} className="text-[var(--secondary)]" />
 
-    <div className="mt-8 inline-flex items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-6 py-3">
-      <BookOpen size={22} className="text-[var(--secondary)]" />
-      <span className="text-2xl font-bold text-[var(--primary)]">
-        {books.length}
-      </span>
-      <span className="text font-medium text-[var(--text-secondary)]">
-        Books Available
-      </span>
-    </div>
+            <span className="text-lg font-bold text-[var(--primary)]">
+              {books.length}
+            </span>
 
-  </div>
-</section>
+            <span className="text-sm font-medium text-[var(--text-secondary)]">
+              Books Available
+            </span>
+          </div>
+        </div>
+      </section>
 
       {/* Books Collection */}
       <section className="px-4 py-14 sm:py-18">
         <div className="mx-auto w-[calc(100%-24px)] sm:w-[90%]">
           <div className="mb-8 flex items-center justify-between">
             <div>
-              <h2 className="font-serif text-2xl md:text-4xl font-bold text-[var(--text-primary)]">
+              <h2 className="font-serif text-2xl font-bold text-[var(--text-primary)] md:text-4xl">
                 Our Collection
               </h2>
               <p className="mt-2 font-medium text-[var(--text-muted)]">
