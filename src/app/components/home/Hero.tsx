@@ -19,7 +19,7 @@ const slides = [
       <>
         Build Your{" "}
         <br />
-        <span className="text-[var(--secondary)]">Own Library.</span>
+        <span className="text-(--secondary)">Own Library.</span>
       </>
     ),
     description:
@@ -33,7 +33,7 @@ const slides = [
     title: (
       <>
         Borrow Books.{" "}
-        <span className="text-[var(--secondary)]">Read More.</span>
+        <span className="text-(--secondary)">Read More.</span>
       </>
     ),
     description:
@@ -47,7 +47,7 @@ const slides = [
     title: (
       <>
         Share Books.{" "}
-        <span className="text-[var(--secondary)]">Grow Together.</span>
+        <span className="text-(--secondary)">Grow Together.</span>
       </>
     ),
     description:
@@ -81,12 +81,12 @@ const HeroSection = () => {
     <section
       id="home"
       aria-label="Featured reading"
-      className="relative isolate mx-auto mt-5 w-[calc(100%-24px)] overflow-hidden rounded-[24px] bg-[var(--primary-bg)] px-4 pb-8 pt-12 sm:mt-10 sm:w-[90%] sm:rounded-[28px] sm:px-10 sm:pt-20 lg:pb-10 lg:pt-20"
+      className="relative isolate mx-auto mt-5 w-[calc(100%-24px)] overflow-hidden rounded-[24px] bg-(--primary-bg) px-4 pb-8 pt-12 sm:mt-10 sm:w-[90%] sm:rounded-[28px] sm:px-10 sm:pt-20 lg:pb-10 lg:pt-20"
     >
       {/* Decorative Circular Curve */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -left-[265px] top-[130px] size-[440px] rounded-full border border-[var(--primary)]/[0.09]"
+        className="pointer-events-none absolute -left-[265px] top-[130px] size-[440px] rounded-full border border-(--primary)/[0.09]"
       />
 
       {/* Hero Content */}
@@ -115,8 +115,8 @@ const HeroSection = () => {
                     className="animate-hero-copy relative z-10 lg:pl-7"
                   >
                     {/* Eyebrow */}
-                    <div className="flex items-center gap-3 text-[12px] font-bold uppercase tracking-[0.2em] text-[var(--secondary)]">
-                      <span className="h-px w-[38px] bg-[var(--secondary)]" />
+                    <div className="flex items-center gap-3 text-[12px] font-bold uppercase tracking-[0.2em] text-(--secondary)">
+                      <span className="h-px w-[38px] bg-(--secondary)" />
                       {slide.eyebrow}
                     </div>
 
@@ -126,7 +126,7 @@ const HeroSection = () => {
                     </h1>
 
                     {/* Description */}
-                    <p className="mt-5 min-h-[5.4em] max-w-[460px] text-[14px] font-medium leading-[1.8] text-[var(--text-secondary)] sm:text-[16px]">
+                    <p className="mt-5 min-h-[5.4em] max-w-[460px] text-[14px] font-medium leading-[1.8] text-(--text-secondary) sm:text-[16px]">
                       {slide.description}
                     </p>
 
@@ -134,7 +134,7 @@ const HeroSection = () => {
                     <div className="mt-7">
                       <Link
                         href="#books"
-                        className="inline-flex h-[48px] items-center gap-4 rounded-lg border border-[var(--secondary)] bg-[var(--secondary)] px-7 text-[13px] font-semibold tracking-wide text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--secondary-hover)] hover:bg-[var(--secondary-hover)]"
+                        className="inline-flex h-[48px] items-center gap-4 rounded-lg border border-(--secondary) bg-(--secondary) px-7 text-[13px] font-semibold tracking-wide text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-(--secondary-hover) hover:bg-(--secondary-hover)"
                       >
                         Browse books
                         <ArrowUpRight size={18} />
@@ -168,8 +168,8 @@ const HeroSection = () => {
                     </div>
 
                     {/* Floating Editor Note */}
-                    <div className="absolute bottom-4 left-0 z-20 w-[235px] rounded-md border border-[var(--primary)]/10 bg-[var(--main-bg)] p-5 font-medium shadow-sm sm:w-[270px] sm:p-[26px]">
-                      <p className="mt-2 text-[15px] italic leading-relaxed text-[var(--primary)]">
+                    <div className="absolute bottom-4 left-0 z-20 w-[235px] rounded-md border border-(--primary)/10 bg-(--main-bg) p-5 font-medium shadow-sm sm:w-[270px] sm:p-[26px]">
+                      <p className="mt-2 text-[15px] italic leading-relaxed text-(--primary)">
                         A book is a quiet place where the world becomes larger.
                       </p>
                     </div>
@@ -196,8 +196,8 @@ const HeroSection = () => {
                   <span
                     className={`block rounded-full transition-all duration-300 ${
                       activeSlide === index
-                        ? "size-2.5 bg-[var(--secondary)]"
-                        : "size-1.5 bg-[var(--primary)]/30"
+                        ? "size-2.5 bg-(--secondary)"
+                        : "size-1.5 bg-(--primary)/30"
                     }`}
                   />
                 </button>

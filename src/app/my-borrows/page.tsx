@@ -43,22 +43,22 @@ const borrowedBooks = [
 
 const MyBorrows = () => {
   return (
-    <main className="min-h-screen bg-[var(--main-bg)] pb-16">
+    <main className="min-h-screen bg-(--main-bg) pb-16">
       {/* Hero Section */}
-      <section className="relative isolate mx-auto mt-5 w-[calc(100%-24px)] overflow-hidden rounded-[24px] bg-[var(--primary-bg)] px-5 py-10 sm:mt-10 sm:w-[90%] sm:rounded-[28px] sm:px-10 sm:py-12 lg:py-14">
+      <section className="relative isolate mx-auto mt-5 w-[calc(100%-24px)] overflow-hidden rounded-[24px] bg-(--primary-bg) px-5 py-10 sm:mt-10 sm:w-[90%] sm:rounded-[28px] sm:px-10 sm:py-12 lg:py-14">
         <div className="relative mx-auto max-w-[1320px] text-center">
-          <div className="flex items-center justify-center gap-3 text-[12px] font-bold uppercase tracking-[0.2em] text-[var(--secondary)]">
-            <span className="h-px w-[38px] bg-[var(--secondary)]" />
+          <div className="flex items-center justify-center gap-3 text-[12px] font-bold uppercase tracking-[0.2em] text-(--secondary)">
+            <span className="h-px w-[38px] bg-(--secondary)" />
             Your Reading Collection
-            <span className="h-px w-[38px] bg-[var(--secondary)]" />
+            <span className="h-px w-[38px] bg-(--secondary)" />
           </div>
 
           <h1 className="mt-4 font-serif text-4xl font-bold tracking-[-0.045em] text-[#102D24] sm:text-5xl">
             My Borrowed{" "}
-            <span className="text-[var(--secondary)]">Books.</span>
+            <span className="text-(--secondary)">Books.</span>
           </h1>
 
-          <p className="mx-auto mt-4 max-w-[550px] text-sm font-medium leading-[1.8] text-[var(--text-secondary)] sm:text-[15px]">
+          <p className="mx-auto mt-4 max-w-[550px] text-sm font-medium leading-[1.8] text-(--text-secondary) sm:text-[15px]">
             Keep track of your borrowed books and manage your reading
             collection. Return your books on time and discover more stories.
           </p>
@@ -70,45 +70,45 @@ const MyBorrows = () => {
         {/* Section Heading */}
         <div className="mb-5 flex items-end justify-between gap-3">
           <div>
-            <h2 className="font-serif text-2xl font-bold text-[var(--text-primary)] sm:text-3xl">
+            <h2 className="font-serif text-2xl font-bold text-(--text-primary) sm:text-3xl">
               Borrowed Books
             </h2>
 
-            <p className="mt-1.5 text-sm text-[var(--text-muted)]">
+            <p className="mt-1.5 text-sm text-(--text-muted)">
               Manage your borrowed books and return them on time.
             </p>
           </div>
 
-          <span className="shrink-0 rounded-full bg-[var(--primary-bg)] px-4 py-2 text-xs font-semibold text-[var(--secondary)]">
+          <span className="shrink-0 rounded-full bg-(--primary-bg) px-4 py-2 text-xs font-semibold text-(--secondary)">
             {borrowedBooks.length} Books
           </span>
         </div>
 
         {/* Books Table / Empty State */}
         {borrowedBooks.length > 0 ? (
-          <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-sm">
+          <div className="overflow-hidden rounded-2xl border border-(--border) bg-(--surface) shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[800px] border-collapse text-left">
                 {/* Table Header */}
                 <thead>
-                  <tr className="border-b border-[var(--border)] bg-[var(--main-bg)]">
-                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
+                  <tr className="border-b border-(--border) bg-(--main-bg)">
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-(--text-secondary)">
                       Book
                     </th>
 
-                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-(--text-secondary)">
                       Title
                     </th>
 
-                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-(--text-secondary)">
                       Borrow Date
                     </th>
 
-                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-(--text-secondary)">
                       Return Date
                     </th>
 
-                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-(--text-secondary)">
                       Action
                     </th>
                   </tr>
@@ -119,11 +119,11 @@ const MyBorrows = () => {
                   {borrowedBooks.map((book) => (
                     <tr
                       key={book.id}
-                      className="border-b border-[var(--border)] transition-colors duration-200 last:border-0 hover:bg-[var(--main-bg)]"
+                      className="border-b border-(--border) transition-colors duration-200 last:border-0 hover:bg-(--main-bg)"
                     >
                       {/* Book Image */}
                       <td className="px-6 py-4">
-                        <div className="h-[68px] w-[52px] overflow-hidden rounded-lg bg-[var(--main-bg)]">
+                        <div className="h-[68px] w-[52px] overflow-hidden rounded-lg bg-(--main-bg)">
                           <img
                             src={book.image}
                             alt={book.title}
@@ -134,21 +134,21 @@ const MyBorrows = () => {
 
                       {/* Book Title */}
                       <td className="px-6 py-4">
-                        <p className="text-sm font-semibold text-[var(--text-primary)]">
+                        <p className="text-sm font-semibold text-(--text-primary)">
                           {book.title}
                         </p>
 
-                        <p className="mt-1 text-xs text-[var(--text-muted)]">
+                        <p className="mt-1 text-xs text-(--text-muted)">
                           By {book.author}
                         </p>
                       </td>
 
                       {/* Borrow Date */}
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-2 whitespace-nowrap text-sm text-[var(--text-secondary)]">
+                        <div className="flex items-center gap-2 whitespace-nowrap text-sm text-(--text-secondary)">
                           <CalendarDays
                             size={15}
-                            className="shrink-0 text-[var(--secondary)]"
+                            className="shrink-0 text-(--secondary)"
                           />
                           {book.borrowDate}
                         </div>
@@ -156,10 +156,10 @@ const MyBorrows = () => {
 
                       {/* Return Date */}
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-2 whitespace-nowrap text-sm text-[var(--text-secondary)]">
+                        <div className="flex items-center gap-2 whitespace-nowrap text-sm text-(--text-secondary)">
                           <CalendarDays
                             size={15}
-                            className="shrink-0 text-[var(--secondary)]"
+                            className="shrink-0 text-(--secondary)"
                           />
                           {book.returnDate}
                         </div>
@@ -169,7 +169,7 @@ const MyBorrows = () => {
                       <td className="px-6 py-4">
                         <button
                           type="button"
-                          className="flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-[var(--secondary)] bg-[var(--secondary)] px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90"
+                          className="flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-(--secondary) bg-(--secondary) px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90"
                         >
                           <RotateCcw size={14} />
                           Return Book
@@ -183,26 +183,26 @@ const MyBorrows = () => {
           </div>
         ) : (
           /* Empty State */
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface)] px-5 py-14 text-center shadow-sm sm:py-16">
-            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--primary-bg)]">
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-(--border) bg-(--surface) px-5 py-14 text-center shadow-sm sm:py-16">
+            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-(--primary-bg)">
               <BookOpen
                 size={30}
-                className="text-[var(--secondary)]"
+                className="text-(--secondary)"
               />
             </div>
 
-            <h3 className="font-serif text-2xl font-bold text-[var(--text-primary)]">
+            <h3 className="font-serif text-2xl font-bold text-(--text-primary)">
               No Borrowed Books Yet!
             </h3>
 
-            <p className="mt-2 max-w-[380px] text-sm leading-6 text-[var(--text-muted)]">
+            <p className="mt-2 max-w-[380px] text-sm leading-6 text-(--text-muted)">
               You haven&apos;t borrowed any books yet. Explore our library
               and discover your next favourite read!
             </p>
 
             <a
               href="/books"
-              className="mt-6 rounded-lg border border-[var(--secondary)] bg-[var(--secondary)] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90"
+              className="mt-6 rounded-lg border border-(--secondary) bg-(--secondary) px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90"
             >
               Explore Books
             </a>
