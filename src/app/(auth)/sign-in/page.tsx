@@ -20,28 +20,41 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleEmailSignIn = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleEmailSignIn = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
+    if (isLoading) return;
 
-    const user = Object.fromEntries(formData.entries()) as {
-      email: string;
-      password: string;
-    };
+    try {
+      setIsLoading(true);
 
-    const { data, error } = await signIn.email({
+      const formData = new FormData(e.currentTarget);
+
+      const user = Object.fromEntries(formData.entries()) as {
+        email: string;
+        password: string;
+      };
+
+      const { data, error } = await signIn.email({
         ...user,
         callbackURL: "/",
       });
 
+      if (error) {
+        toast.error("Invalid Email or Password");
+        return;
+      }
+
       if (data) {
         toast.success("User signed in successfully!");
       }
-
-      if (error) {
-        toast.error("Invalid Email or Password");
-      }
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -196,7 +209,8 @@ const SignIn = () => {
                   placeholder="you@example.com"
                   autoComplete="email"
                   required
-                  className="w-full rounded-xl border border-(--border) bg-(--main-bg) py-2.5 pr-4 pl-11 text-sm text-(--text-primary) outline-none transition-all placeholder:text-(--text-muted) focus:border-(--secondary) focus:ring-2 focus:ring-(--secondary)/10"
+                  disabled={isLoading}
+                  className="w-full rounded-xl border border-(--border) bg-(--main-bg) py-2.5 pr-4 pl-11 text-sm text-(--text-primary) outline-none transition-all placeholder:text-(--text-muted) focus:border-(--secondary) focus:ring-2 focus:ring-(--secondary)/10 disabled:opacity-60"
                 />
               </div>
             </div>
@@ -232,14 +246,16 @@ const SignIn = () => {
                   placeholder="Enter your password"
                   autoComplete="current-password"
                   required
-                  className="w-full rounded-xl border border-(--border) bg-(--main-bg) py-2.5 pr-12 pl-11 text-sm text-(--text-primary) outline-none transition-all placeholder:text-(--text-muted) focus:border-(--secondary) focus:ring-2 focus:ring-(--secondary)/10"
+                  disabled={isLoading}
+                  className="w-full rounded-xl border border-(--border) bg-(--main-bg) py-2.5 pr-12 pl-11 text-sm text-(--text-primary) outline-none transition-all placeholder:text-(--text-muted) focus:border-(--secondary) focus:ring-2 focus:ring-(--secondary)/10 disabled:opacity-60"
                 />
 
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer text-(--text-muted) transition-colors hover:text-(--text-primary)"
+                  disabled={isLoading}
+                  className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer text-(--text-muted) transition-colors hover:text-(--text-primary) disabled:cursor-not-allowed"
                 >
                   {showPassword ? (
                     <EyeOff size={18} />
@@ -256,9 +272,17 @@ const SignIn = () => {
               disabled={isLoading}
               className="mt-1 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-(--secondary) px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-(--secondary-hover) active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isLoading ? "Signing In..." : "Sign In"}
-
-              {!isLoading && <ArrowRight size={17} />}
+              {isLoading ? (
+                <>
+                  <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                  Signing In...
+                </>
+              ) : (
+                <>
+                  Sign In
+                  <ArrowRight size={17} />
+                </>
+              )}
             </button>
           </form>
 
