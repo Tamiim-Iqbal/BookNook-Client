@@ -172,10 +172,7 @@ const SignUp = () => {
 
                     {/* Heading */}
                     <div className="mb-6">
-                        <p className="mb-1 text-xs font-semibold tracking-wide text-(--secondary)">
-                            JOIN OUR READING ROOM
-                        </p>
-
+                        
                         <h1 className="font-serif text-3xl font-bold text-(--text-primary) sm:text-4xl">
                             Create your account
                         </h1>

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   BookOpen,
@@ -18,14 +17,10 @@ import { signIn } from "@/lib/auth-client";
 import { toast } from "react-hot-toast";
 
 const SignIn = () => {
-  const router = useRouter();
-
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleEmailSignIn = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleEmailSignIn = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
@@ -35,40 +30,27 @@ const SignIn = () => {
       password: string;
     };
 
-    try {
-      setIsLoading(true);
-
-      const { data, error } = await signIn.email({
-        email: user.email,
-        password: user.password,
+    const { data, error } = await signIn.email({
+        ...user,
         callbackURL: "/",
       });
 
-      if (error) {
-        toast.error(error.message || "Invalid email or password!");
-        console.error("Signin error:", error);
-        return;
+      if (data) {
+        toast.success("User signed in successfully!");
       }
 
-      if (data) {
-        toast.success("Signed in successfully!");
-        router.push("/");
-        router.refresh();
+      if (error) {
+        toast.error("Invalid Email or Password");
       }
-    } catch (error) {
-      console.error("Signin error:", error);
-      toast.error("Something went wrong! Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   return (
-    <main className="flex min-h-[calc(100vh-72px)] items-center justify-center bg-(--main-bg) px-4 pt-2  sm:px-6">
+    <main className="flex min-h-[calc(100vh-72px)] items-center justify-center bg-(--main-bg) px-4 pt-2 sm:px-6">
       <div className="mx-auto grid w-full max-w-5xl overflow-hidden rounded-3xl border border-(--border) bg-(--primary-bg) shadow-sm lg:grid-cols-2">
 
         {/* Left: Visual Panel */}
         <section className="relative hidden flex-col justify-between overflow-hidden bg-(--secondary) p-9 text-white lg:flex">
+
           {/* Decorative Background */}
           <div className="absolute -top-28 -right-28 size-80 rounded-full border border-white/10" />
           <div className="absolute -top-16 -right-16 size-56 rounded-full border border-white/10" />
@@ -129,9 +111,10 @@ const SignIn = () => {
 
           {/* Quote */}
           <div className="relative z-10 border-t border-white/20 pt-5">
-            <p className="font-serif text-lg italic leading-relaxed text-white/90">
+            <p className="font-serif text-lg leading-relaxed text-white/90 italic">
               A book is a dream that you hold in your hands.
             </p>
+
             <p className="mt-2 text-xs font-medium tracking-wide text-white/60">
               — Neil Gaiman
             </p>
@@ -142,7 +125,7 @@ const SignIn = () => {
         <section className="flex flex-col justify-center px-6 py-10 sm:px-10 lg:px-12 lg:py-8">
 
           {/* Logo */}
-          <Link href="/" className="mb-3 inline-flex w-fit items-center gap-2.5">
+          <Link href="/" className="mb-5 inline-flex w-fit items-center gap-2.5">
             <div className="flex size-10 items-center justify-center rounded-xl bg-(--secondary)">
               <BookOpen size={23} className="text-white" />
             </div>
@@ -154,10 +137,6 @@ const SignIn = () => {
 
           {/* Heading */}
           <div className="mb-6">
-            <p className="mb-1 text-xs font-semibold tracking-wide text-(--secondary)">
-              WELCOME BACK TO YOUR LIBRARY
-            </p>
-
             <h1 className="font-serif text-3xl font-bold text-(--text-primary) sm:text-4xl">
               Sign in to your account
             </h1>
@@ -184,9 +163,11 @@ const SignIn = () => {
           {/* Divider */}
           <div className="mt-3 mb-3 flex items-center gap-4">
             <div className="h-px flex-1 bg-(--border)" />
+
             <span className="text-[11px] font-medium text-(--text-muted)">
               OR
             </span>
+
             <div className="h-px flex-1 bg-(--border)" />
           </div>
 
@@ -260,7 +241,11 @@ const SignIn = () => {
                   aria-label={showPassword ? "Hide password" : "Show password"}
                   className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer text-(--text-muted) transition-colors hover:text-(--text-primary)"
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
                 </button>
               </div>
             </div>
@@ -272,6 +257,7 @@ const SignIn = () => {
               className="mt-1 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-(--secondary) px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-(--secondary-hover) active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isLoading ? "Signing In..." : "Sign In"}
+
               {!isLoading && <ArrowRight size={17} />}
             </button>
           </form>
