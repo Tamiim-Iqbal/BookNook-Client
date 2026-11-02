@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "../context/AuthContext";
-import { authClient } from "@/lib/auth-client";
+import { signOut } from "@/lib/auth-client";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import {
@@ -20,7 +20,7 @@ const Page = () => {
 
   const handleSignOut = async () => {
     try {
-      const { error } = await authClient.signOut();
+      const { error } = await signOut();
 
       if (error) {
         toast.error("Failed to sign out. Please try again.");

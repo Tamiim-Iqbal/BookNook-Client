@@ -8,11 +8,9 @@ import {
   BookOpen,
   Menu,
   X,
-  ChevronDown,
-  UserRound,
-  LogOut,
+  ChevronDown
 } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
+import { signOut } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 import { useAuth } from "@/app/context/AuthContext";
 
@@ -84,7 +82,7 @@ export default function Navbar() {
     try {
       setIsSigningOut(true);
 
-      const { error } = await authClient.signOut();
+      const { error } = await signOut();
 
       if (error) {
         toast.error("Failed to sign out. Please try again.");
