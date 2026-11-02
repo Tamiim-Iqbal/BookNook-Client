@@ -26,7 +26,7 @@ const MyBooks = () => {
     const fetchMyBooks = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/books/my-books?email=${encodeURIComponent(user.email)}`
+          `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/my-books?email=${encodeURIComponent(user.email)}`
         );
 
         if (!response.ok) {
