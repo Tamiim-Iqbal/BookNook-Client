@@ -15,16 +15,19 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { signUp } from "@/lib/auth-client";
-import { toast } from 'react-hot-toast';
+import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 const SignUp = () => {
     const router = useRouter();
-    
+
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [passwordError, setPasswordError] = useState("");
 
-    const handleEmailSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleEmailSignUp = async (
+        e: React.FormEvent<HTMLFormElement>
+    ) => {
         e.preventDefault();
 
         const formData = new FormData(e.currentTarget);
@@ -37,6 +40,17 @@ const SignUp = () => {
         };
 
         // Password validation
+        if (user.password.length < 8) {
+            const message = "Password must be at least 8 characters long";
+
+            setPasswordError(message);
+            toast.error(message);
+            return;
+        }
+
+        setPasswordError("");
+
+        // Confirm password validation
         if (user.password !== user.confirmPassword) {
             toast.error("Password and Confirm Password do not match");
             return;
@@ -61,8 +75,7 @@ const SignUp = () => {
 
                 router.push("/sign-in");
             }
-        } 
-        catch (error) {
+        } catch (error) {
             console.error("Signup error:", error);
             toast.error("Something went wrong! Please try again.");
         }
@@ -145,6 +158,7 @@ const SignUp = () => {
 
                 {/* Right: Sign Up Form */}
                 <section className="flex flex-col justify-center px-6 py-8 sm:px-10 lg:px-12 lg:py-4">
+
                     {/* Logo */}
                     <Link href="/" className="mb-3 inline-flex w-fit items-center gap-2.5">
                         <div className="flex size-10 items-center justify-center rounded-xl bg-(--secondary)">
@@ -165,14 +179,12 @@ const SignUp = () => {
                         <h1 className="font-serif text-3xl font-bold text-(--text-primary) sm:text-4xl">
                             Create your account
                         </h1>
-
-
                     </div>
 
                     {/* Google Sign Up */}
                     <button
                         type="button"
-                        className="flex w-full items-center justify-center gap-3 rounded-xl border border-(--border) bg-(--main-bg) px-4 py-2.5 text-sm font-semibold text-(--text-primary) transition-colors hover:bg-(--main-bg)/70 cursor-pointer"
+                        className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-(--border) bg-(--main-bg) px-4 py-2.5 text-sm font-semibold text-(--text-primary) transition-colors hover:bg-(--main-bg)/70"
                     >
                         <Image
                             src="/images/logo/google.png"
@@ -186,7 +198,7 @@ const SignUp = () => {
                     {/* Divider */}
                     <div className="mt-3 mb-2 flex items-center gap-4">
                         <div className="h-px flex-1 bg-(--border)" />
-                        <span className="text-[11px] font-medium text-(--text-]secondary)">
+                        <span className="text-[11px] font-medium text-(--text-muted)">
                             OR
                         </span>
                         <div className="h-px flex-1 bg-(--border)" />
@@ -194,6 +206,7 @@ const SignUp = () => {
 
                     {/* Form */}
                     <form onSubmit={handleEmailSignUp} className="space-y-3">
+
                         {/* Name */}
                         <div>
                             <label
@@ -270,6 +283,11 @@ const SignUp = () => {
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Create a password"
                                     autoComplete="new-password"
+                                    onChange={(e) => {
+                                        if (e.target.value.length >= 8) {
+                                            setPasswordError("");
+                                        }
+                                    }}
                                     className="w-full rounded-xl border border-(--border) bg-(--main-bg) py-2.5 pr-12 pl-11 text-sm text-(--text-primary) outline-none transition-all placeholder:text-(--text-muted) focus:border-(--secondary) focus:ring-2 focus:ring-(--secondary)/10"
                                 />
 
@@ -331,12 +349,19 @@ const SignUp = () => {
                         {/* Submit */}
                         <button
                             type="submit"
-                            className="cursor-pointer mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-(--secondary) px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-(--secondary-hover) active:scale-[0.99]"
+                            className="mt-1 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-(--secondary) px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-(--secondary-hover) active:scale-[0.99]"
                         >
                             Create Account
                             <ArrowRight size={17} />
                         </button>
                     </form>
+
+                    {/* Password Error - Form এর নিচে */}
+                    {passwordError && (
+                        <p className="mt-2 text-center text-sm text-red-500">
+                            {passwordError}
+                        </p>
+                    )}
 
                     {/* Sign In Link */}
                     <p className="mt-5 text-center text-sm text-(--text-muted)">

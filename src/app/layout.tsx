@@ -5,6 +5,7 @@ import "./globals.css";
 
 import Navbar from "./components/home/Navbar";
 import Footer from "./components/home/Footer";
+import { Toaster } from "react-hot-toast";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -37,6 +38,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <Toaster/>
       </body>
     </html>
   );
