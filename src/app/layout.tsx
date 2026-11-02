@@ -6,6 +6,7 @@ import "./globals.css";
 import Navbar from "./components/home/Navbar";
 import Footer from "./components/home/Footer";
 import { Toaster } from "react-hot-toast";
+import { AuthProvider } from "./context/AuthContext";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -33,12 +34,17 @@ export default function RootLayout({
       className={`${dmSans.variable} ${playfairDisplay.variable} min-h-full antialiased`}
     >
       <body className="flex min-h-screen w-full min-w-0 flex-col font-sans">
-        <Navbar />
-        <main className="w-full min-w-0 flex-1">
-          {children}
-        </main>
-        <Footer />
-        <Toaster/>
+        <AuthProvider>
+          <Navbar />
+
+          <main className="w-full min-w-0 flex-1">
+            {children}
+          </main>
+
+          <Footer />
+
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );

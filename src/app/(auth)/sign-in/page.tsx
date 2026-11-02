@@ -18,6 +18,7 @@ import { toast } from "react-hot-toast";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleEmailSignIn = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
