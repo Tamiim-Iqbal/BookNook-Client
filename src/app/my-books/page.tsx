@@ -16,42 +16,39 @@ type Book = {
 };
 
 const MyBooks = () => {
-  const { user } = useAuth();
+  const { user, isPending: isAuthPending } = useAuth();
 
   const [myBooks, setMyBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const showSkeleton =
+    isAuthPending || (!!user?.email && isLoading);
+
   useEffect(() => {
-    if (!user?.email) {
-      setMyBooks([]);
-      setIsLoading(false);
-      return;
-    }
+  if (isAuthPending || !user?.email) return;
 
-    const fetchMyBooks = async () => {
-      try {
-        setIsLoading(true);
+  const fetchMyBooks = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/books/my-books?email=${encodeURIComponent(user.email)}`
+      );
 
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/books/my-books?email=${encodeURIComponent(user.email)}`
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch books");
-        }
-
-        const data = await response.json();
-        setMyBooks(data);
-      } catch (error) {
-        console.error("Error fetching my books:", error);
-        setMyBooks([]);
-      } finally {
-        setIsLoading(false);
+      if (!response.ok) {
+        throw new Error("Failed to fetch books");
       }
-    };
 
-    fetchMyBooks();
-  }, [user?.email]);
+      const data = await response.json();
+      setMyBooks(data);
+    } catch (error) {
+      console.error("Error fetching my books:", error);
+      setMyBooks([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  fetchMyBooks();
+}, [user?.email, isAuthPending]);
 
   return (
     <main className="min-h-screen bg-(--main-bg) pb-16">
@@ -95,11 +92,64 @@ const MyBooks = () => {
         </div>
 
         {/* Loading State */}
-        {isLoading ? (
-          <div className="flex items-center justify-center rounded-2xl border border-(--border) bg-(--surface) py-16">
-            <p className="text-sm font-medium text-(--text-muted)">
-              Loading your books...
-            </p>
+        {showSkeleton ? (
+          <div className="overflow-hidden rounded-2xl border border-(--border) bg-(--surface) shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[800px] border-collapse text-left">
+                <thead>
+                  <tr className="border-b border-(--border) bg-(--main-bg)">
+                    {["Book", "Title", "Category", "Available Copies", "Action"].map(
+                      (heading) => (
+                        <th
+                          key={heading}
+                          className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-(--text-secondary)"
+                        >
+                          {heading}
+                        </th>
+                      )
+                    )}
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {[1, 2, 3, 4].map((item) => (
+                    <tr
+                      key={item}
+                      className="border-b border-(--border) last:border-0"
+                    >
+                      {/* Book Image Skeleton */}
+                      <td className="px-6 py-4">
+                        <div className="h-[68px] w-[52px] animate-pulse rounded-lg bg-(--primary-bg)" />
+                      </td>
+
+                      {/* Title Skeleton */}
+                      <td className="px-4 py-4">
+                        <div className="h-4 w-36 animate-pulse rounded bg-(--primary-bg)" />
+                        <div className="mt-2 h-3 w-24 animate-pulse rounded bg-(--primary-bg)" />
+                      </td>
+
+                      {/* Category Skeleton */}
+                      <td className="px-4 py-4">
+                        <div className="h-7 w-20 animate-pulse rounded-full bg-(--primary-bg)" />
+                      </td>
+
+                      {/* Copies Skeleton */}
+                      <td className="px-6 py-4">
+                        <div className="ml-4 h-4 w-16 animate-pulse rounded bg-(--primary-bg)" />
+                      </td>
+
+                      {/* Action Skeleton */}
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="h-10 w-20 animate-pulse rounded-lg bg-(--primary-bg)" />
+                          <div className="h-10 w-24 animate-pulse rounded-lg bg-(--primary-bg)" />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         ) : myBooks.length > 0 ? (
           /* Books Table */
@@ -223,11 +273,11 @@ const MyBooks = () => {
             </p>
 
             <Link
-              href="/books"
+              href="/add-book"
               className="mt-6 inline-flex items-center gap-2 rounded-xl bg-(--secondary) px-5 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-(--secondary-hover)"
             >
               <BookOpen size={16} />
-              Explore Books
+              Add a Book
             </Link>
           </div>
         )}
