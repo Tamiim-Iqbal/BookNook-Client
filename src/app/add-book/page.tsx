@@ -298,7 +298,7 @@ const AddBook = () => {
 
             {/* Submit Button */}
             <button
-              type="button"
+              type="submit"
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-(--secondary) px-5 py-3 text-sm font-semibold text-white transition hover:bg-(--secondary-hover) active:scale-[0.99]"
             >
               <BookOpen size={18} />
