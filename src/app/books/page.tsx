@@ -4,7 +4,7 @@ import BookCard from "../components/books/BookCard";
 
 const Books = async () => {
   const response = await fetch(
-    `${process.env.BACKEND_API_URL}/books/latest`,
+    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/books/latest`,
     { cache: "no-store" }
   );
   const books: Book[] = await response.json();

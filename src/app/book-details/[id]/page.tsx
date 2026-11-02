@@ -19,7 +19,7 @@ const BookDetails = async ({ params }: BookDetailsProps) => {
   const { id } = await params;
 
   const response = await fetch(
-  `${process.env.BACKEND_API_URL}/book-details/${id}`,
+  `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/book-details/${id}`,
   { cache: "no-store" }
 );
 

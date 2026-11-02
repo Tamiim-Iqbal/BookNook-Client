@@ -10,26 +10,115 @@ import {
   ExternalLink,
 } from "lucide-react";
 
+import { useAuth } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+
 const categories = [
   "Fiction",
   "Non-Fiction",
-  "Science",
+  "Science Fiction",
   "Technology",
   "Biography",
   "History",
   "Fantasy",
+  "Science",
   "Others",
 ];
 
 const AddBook = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const handleAddBook = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const bookData = Object.fromEntries(formData.entries()) as {
+      bookTitle: string;
+      authorName: string;
+      copy: string;
+      coverImage: string;
+      description: string;
+      rating: string;
+    };
+
+    if (!selectedCategory) {
+      toast.error("Please select a category.");
+      return;
+    }
+
+    if (!user) {
+      toast.error("Please login to add a book.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const newBook = {
+        category: selectedCategory,
+        name: bookData.bookTitle,
+        author: bookData.authorName,
+        copy: Number(bookData.copy),
+        img: bookData.coverImage,
+        description: bookData.description,
+        rating: Number(bookData.rating),
+        addedBy: {
+          name: user.name,
+          email: user.email,
+        },
+      };
+
+      const API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+      console.log("Backend URL:", API_URL);
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/books`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newBook),
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok && result.insertedId) {
+        toast.success("Book added successfully!");
+
+        form.reset();
+        setSelectedCategory("");
+
+        setTimeout(() => {
+          router.push("/books");
+        }, 1200);
+      } else {
+        toast.error(result.message || "Failed to add book.");
+      }
+    } catch (error) {
+      console.error("Error adding book:", error);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <main className="bg-(--main-bg) pt-6 sm:pt-8">
       <div className="mx-auto grid w-[calc(100%-24px)] overflow-hidden rounded-3xl border border-(--border) bg-(--primary-bg) shadow-sm sm:w-[90%] lg:grid-cols-[40fr_60fr]">
+
         {/* Left Section */}
         <section className="relative hidden flex-col justify-between overflow-hidden bg-(--secondary) p-8 text-white lg:flex xl:p-7">
+
           {/* Decorative Circles */}
           <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full border border-white/10" />
           <div className="pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full border border-white/10" />
@@ -89,6 +178,7 @@ const AddBook = () => {
 
         {/* Right Section */}
         <section className="flex flex-col justify-center bg-(--primary-bg) px-5 py-7 sm:px-8 sm:py-8 lg:px-9 xl:px-12">
+
           {/* Heading */}
           <div className="mb-5">
             <p className="mb-2 text-xs font-semibold tracking-[0.2em] text-(--secondary)">
@@ -105,7 +195,8 @@ const AddBook = () => {
           </div>
 
           {/* Form */}
-          <form className="space-y-3">
+          <form onSubmit={handleAddBook} className="space-y-3">
+
             {/* Book Title & Author */}
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
               <div>
@@ -118,6 +209,8 @@ const AddBook = () => {
 
                 <input
                   id="bookTitle"
+                  name="bookTitle"
+                  required
                   type="text"
                   placeholder="Enter book title"
                   className="w-full rounded-xl border border-(--border) bg-(--main-bg) px-3.5 py-2.5 text-sm text-(--text-primary) outline-none transition placeholder:text-(--text-muted) focus:border-(--secondary) focus:ring-2 focus:ring-(--secondary)/10"
@@ -134,6 +227,8 @@ const AddBook = () => {
 
                 <input
                   id="authorName"
+                  name="authorName"
+                  required
                   type="text"
                   placeholder="Enter author name"
                   className="w-full rounded-xl border border-(--border) bg-(--main-bg) px-3.5 py-2.5 text-sm text-(--text-primary) outline-none transition placeholder:text-(--text-muted) focus:border-(--secondary) focus:ring-2 focus:ring-(--secondary)/10"
@@ -141,8 +236,9 @@ const AddBook = () => {
               </div>
             </div>
 
-            {/* Category & Copies */}
-            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            {/* Category, Copies & Rating */}
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+
               {/* Category Dropdown */}
               <div className="relative">
                 <label className="mb-1.5 block text-sm font-medium text-(--text-primary)">
@@ -166,9 +262,8 @@ const AddBook = () => {
 
                   <ChevronDown
                     size={17}
-                    className={`text-(--text-secondary) transition-transform ${
-                      isCategoryOpen ? "rotate-180" : ""
-                    }`}
+                    className={`shrink-0 text-(--text-secondary) transition-transform ${isCategoryOpen ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
 
@@ -182,16 +277,18 @@ const AddBook = () => {
                           setSelectedCategory(category);
                           setIsCategoryOpen(false);
                         }}
-                        className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition ${
-                          selectedCategory === category
+                        className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition ${selectedCategory === category
                             ? "bg-(--secondary)/10 font-medium text-(--secondary)"
                             : "text-(--text-primary) hover:bg-(--secondary)/10 hover:text-(--secondary)"
-                        }`}
+                          }`}
                       >
                         {category}
 
                         {selectedCategory === category && (
-                          <Check size={16} className="text-(--secondary)" />
+                          <Check
+                            size={16}
+                            className="shrink-0 text-(--secondary)"
+                          />
                         )}
                       </button>
                     ))}
@@ -199,19 +296,45 @@ const AddBook = () => {
                 )}
               </div>
 
+              {/* Copies */}
               <div>
                 <label
-                  htmlFor="copies"
+                  htmlFor="copy"
                   className="mb-1.5 block text-sm font-medium text-(--text-primary)"
                 >
-                  Number of Copies
+                  Copies
                 </label>
 
                 <input
-                  id="copies"
+                  id="copy"
+                  name="copy"
+                  required
                   type="number"
                   min="1"
-                  placeholder="Enter copies"
+                  placeholder="Copies available"
+                  className="w-full rounded-xl border border-(--border) bg-(--main-bg) px-3.5 py-2.5 text-sm text-(--text-primary) outline-none transition placeholder:text-(--text-muted) focus:border-(--secondary) focus:ring-2 focus:ring-(--secondary)/10"
+                />
+              </div>
+
+              {/* Rating */}
+              <div>
+                <label
+                  htmlFor="rating"
+                  className="mb-1.5 block text-sm font-medium text-(--text-primary)"
+                >
+                  Rating
+                </label>
+
+                <input
+                  id="rating"
+                  name="rating"
+                  type="number"
+                  required
+                  min="0"
+                  max="5"
+                  step="0.01"
+                  defaultValue="0"
+                  placeholder="0 - 5"
                   className="w-full rounded-xl border border-(--border) bg-(--main-bg) px-3.5 py-2.5 text-sm text-(--text-primary) outline-none transition placeholder:text-(--text-muted) focus:border-(--secondary) focus:ring-2 focus:ring-(--secondary)/10"
                 />
               </div>
@@ -229,7 +352,9 @@ const AddBook = () => {
               <input
                 id="coverImage"
                 type="url"
-                placeholder="https://example.com/book-cover.jpg"
+                name="coverImage"
+                required
+                placeholder="https://covers.openlibrary.org/..."
                 className="w-full rounded-xl border border-(--border) bg-(--main-bg) px-3.5 py-2.5 text-sm text-(--text-primary) outline-none transition placeholder:text-(--text-muted) focus:border-(--secondary) focus:ring-2 focus:ring-(--secondary)/10"
               />
 
@@ -237,7 +362,7 @@ const AddBook = () => {
                 href="https://openlibrary.org/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-1.5 inline-flex items-center gap-1 text-sm text-(--secondary) transition hover:underline font-medium ml-2"
+                className="mt-1.5 ml-2 inline-flex items-center gap-1 text-sm font-medium text-(--secondary) transition hover:underline"
               >
                 Find book cover on Open Library
                 <ExternalLink size={12} />
@@ -255,7 +380,9 @@ const AddBook = () => {
 
               <textarea
                 id="description"
+                name="description"
                 rows={2}
+                required
                 placeholder="Write a short description about the book..."
                 className="w-full resize-none rounded-xl border border-(--border) bg-(--main-bg) px-3.5 py-2.5 text-sm text-(--text-primary) outline-none transition placeholder:text-(--text-muted) focus:border-(--secondary) focus:ring-2 focus:ring-(--secondary)/10"
               />
@@ -274,8 +401,9 @@ const AddBook = () => {
                 <input
                   id="username"
                   type="text"
-                  placeholder="Your username"
-                  className="w-full rounded-xl border border-(--border) bg-(--main-bg) px-3.5 py-2.5 text-sm text-(--text-primary) outline-none transition placeholder:text-(--text-muted) focus:border-(--secondary) focus:ring-2 focus:ring-(--secondary)/10"
+                  disabled
+                  value={user?.name ?? ""}
+                  className="w-full rounded-xl border border-(--border) bg-(--main-bg) px-3.5 py-2.5 text-sm text-(--text-primary) outline-none transition"
                 />
               </div>
 
@@ -290,8 +418,9 @@ const AddBook = () => {
                 <input
                   id="email"
                   type="email"
-                  placeholder="your@email.com"
-                  className="w-full rounded-xl border border-(--border) bg-(--main-bg) px-3.5 py-2.5 text-sm text-(--text-primary) outline-none transition placeholder:text-(--text-muted) focus:border-(--secondary) focus:ring-2 focus:ring-(--secondary)/10"
+                  disabled
+                  value={user?.email ?? ""}
+                  className="w-full rounded-xl border border-(--border) bg-(--main-bg) px-3.5 py-2.5 text-sm text-(--text-primary) outline-none transition"
                 />
               </div>
             </div>
@@ -299,10 +428,11 @@ const AddBook = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-(--secondary) px-5 py-3 text-sm font-semibold text-white transition hover:bg-(--secondary-hover) active:scale-[0.99]"
+              disabled={isSubmitting}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-(--secondary) px-5 py-3 text-sm font-semibold text-white transition hover:bg-(--secondary-hover) active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <BookOpen size={18} />
-              Add Book to Library
+              {isSubmitting ? "Adding Book..." : "Add Book to Library"}
             </button>
           </form>
         </section>

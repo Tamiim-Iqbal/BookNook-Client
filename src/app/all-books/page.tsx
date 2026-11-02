@@ -4,7 +4,7 @@ import { BookOpen } from "lucide-react";
 import BookCard from "../components/books/BookCard";
 
 const AllBooks = async () => {
-  const response = await fetch(`${process.env.BACKEND_API_URL}/books`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/books`, {
     cache: "no-store",
   });
 

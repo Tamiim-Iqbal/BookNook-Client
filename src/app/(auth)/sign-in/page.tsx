@@ -20,9 +20,7 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleEmailSignIn = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleEmailSignIn = async ( e: React.FormEvent<HTMLFormElement> ) => {
     e.preventDefault();
 
     if (isLoading) return;
