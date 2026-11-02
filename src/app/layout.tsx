@@ -33,11 +33,9 @@ export default function RootLayout({
     >
       <body className="flex min-h-screen w-full min-w-0 flex-col font-sans">
         <Navbar />
-
         <main className="w-full min-w-0 flex-1">
           {children}
         </main>
-
         <Footer />
       </body>
     </html>
