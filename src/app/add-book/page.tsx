@@ -19,6 +19,8 @@ const categories = [
   "Non-Fiction",
   "Science Fiction",
   "Technology",
+  "Mystery",
+  "Thriller",
   "Biography",
   "History",
   "Fantasy",
