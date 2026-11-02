@@ -108,7 +108,7 @@ const DeleteBookDialog = ({
             type="button"
             onClick={handleDelete}
             disabled={isDeleting}
-            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-red-700 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-800 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-red-800 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-900 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Trash2 size={16} />
             {isDeleting ? "Deleting..." : "Delete"}
