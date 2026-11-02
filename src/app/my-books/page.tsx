@@ -5,50 +5,54 @@ import Link from "next/link";
 import Image from "next/image";
 import { Pencil, Trash2, BookOpen } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-
-type Book = {
-  _id: string;
-  name: string;
-  author: string;
-  category: string;
-  copy?: number;
-  img: string;
-};
+import EditBookDialog, { type Book } from "../components/books/EditBookDialog";
 
 const MyBooks = () => {
   const { user, isPending: isAuthPending } = useAuth();
 
   const [myBooks, setMyBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [editingBook, setEditingBook] = useState<Book | null>(null);
 
   const showSkeleton =
     isAuthPending || (!!user?.email && isLoading);
 
   useEffect(() => {
-  if (isAuthPending || !user?.email) return;
+    if (isAuthPending || !user?.email) return;
 
-  const fetchMyBooks = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/books/my-books?email=${encodeURIComponent(user.email)}`
-      );
+    const fetchMyBooks = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/books/my-books?email=${encodeURIComponent(user.email)}`
+        );
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch books");
+        if (!response.ok) {
+          throw new Error("Failed to fetch books");
+        }
+
+        const data = await response.json();
+        setMyBooks(data);
+      } catch (error) {
+        console.error("Error fetching my books:", error);
+        setMyBooks([]);
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-      const data = await response.json();
-      setMyBooks(data);
-    } catch (error) {
-      console.error("Error fetching my books:", error);
-      setMyBooks([]);
-    } finally {
-      setIsLoading(false);
-    }
+    fetchMyBooks();
+  }, [user?.email, isAuthPending]);
+
+  // Update book in local state after successful PATCH
+  const handleBookUpdated = (updatedBook: Book) => {
+    setMyBooks((prevBooks) =>
+      prevBooks.map((book) =>
+        book._id === updatedBook._id ? updatedBook : book
+      )
+    );
+
+    setEditingBook(null);
   };
-
-  fetchMyBooks();
-}, [user?.email, isAuthPending]);
 
   return (
     <main className="min-h-screen bg-(--main-bg) pb-16">
@@ -98,16 +102,20 @@ const MyBooks = () => {
               <table className="w-full min-w-[800px] border-collapse text-left">
                 <thead>
                   <tr className="border-b border-(--border) bg-(--main-bg)">
-                    {["Book", "Title", "Category", "Available Copies", "Action"].map(
-                      (heading) => (
-                        <th
-                          key={heading}
-                          className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-(--text-secondary)"
-                        >
-                          {heading}
-                        </th>
-                      )
-                    )}
+                    {[
+                      "Book",
+                      "Title",
+                      "Category",
+                      "Available Copies",
+                      "Action",
+                    ].map((heading) => (
+                      <th
+                        key={heading}
+                        className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-(--text-secondary)"
+                      >
+                        {heading}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
 
@@ -233,8 +241,9 @@ const MyBooks = () => {
                         <div className="flex items-center gap-2">
                           <button
                             type="button"
+                            onClick={() => setEditingBook(book)}
                             aria-label={`Edit ${book.name}`}
-                            className="flex cursor-pointer items-center gap-2 rounded-lg border border-(--border) bg-(--surface) px-3 py-2.5 text-xs font-semibold text-(--text-secondary) transition-all duration-300 hover:border-(--secondary)  hover:text-(--secondary)"
+                            className="flex cursor-pointer items-center gap-2 rounded-lg border border-(--border) bg-(--surface) px-3 py-2.5 text-xs font-semibold text-(--text-secondary) transition-all duration-300 hover:border-(--secondary) hover:text-(--secondary)"
                           >
                             <Pencil size={14} />
                             Edit
@@ -282,6 +291,16 @@ const MyBooks = () => {
           </div>
         )}
       </section>
+
+      {/* Edit Book Dialog */}
+      {editingBook && (
+        <EditBookDialog
+          key={editingBook._id}
+          book={editingBook}
+          onClose={() => setEditingBook(null)}
+          onUpdated={handleBookUpdated}
+        />
+      )}
     </main>
   );
 };
