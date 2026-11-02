@@ -158,7 +158,7 @@ export default function Navbar() {
                 onClick={() => setIsProfileOpen((prev) => !prev)}
                 aria-expanded={isProfileOpen}
                 aria-haspopup="true"
-                className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition hover:bg-(--primary-bg)"
+                className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition hover:bg-(--primary-bg)/75 cursor-pointer"
               >
                 {/* Profile Image */}
                 <div className="size-9 shrink-0 overflow-hidden rounded-full">
@@ -207,7 +207,7 @@ export default function Navbar() {
                   <Link
                     href="/profile"
                     onClick={() => setIsProfileOpen(false)}
-                    className="mt-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-(--primary) transition hover:bg-(--primary-bg)"
+                    className="mt-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-(--primary) transition hover:bg-(--primary-bg)/50"
                   >
                     <span className="text-base">👤</span>
                     <span>My Profile</span>
@@ -218,7 +218,7 @@ export default function Navbar() {
                     type="button"
                     onClick={handleSignOut}
                     disabled={isSigningOut}
-                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-red-500 transition hover:bg-red-50 disabled:opacity-50"
+                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-red-500 transition hover:bg-red-50 disabled:opacity-50 cursor-pointer"
                   >
                     <span className="text-base">↩</span>
                     <span>{isSigningOut ? "Signing out..." : "Sign Out"}</span>
