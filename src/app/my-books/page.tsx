@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Pencil, Trash2, BookOpen } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import EditBookDialog, { type Book } from "../components/books/EditBookDialog";
+import DeleteBookDialog from "../components/books/DeleteBookDialog";
 
 const MyBooks = () => {
   const { user, isPending: isAuthPending } = useAuth();
@@ -13,6 +14,8 @@ const MyBooks = () => {
   const [myBooks, setMyBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
+
+  const [deletingBook, setDeletingBook] = useState<Book | null>(null);
 
   const showSkeleton =
     isAuthPending || (!!user?.email && isLoading);
@@ -52,6 +55,15 @@ const MyBooks = () => {
     );
 
     setEditingBook(null);
+  };
+
+  // Remove book from local state after successful DELETE
+  const handleBookDeleted = (bookId: string) => {
+    setMyBooks((prevBooks) =>
+      prevBooks.filter((book) => book._id !== bookId)
+    );
+
+    setDeletingBook(null);
   };
 
   return (
@@ -251,6 +263,7 @@ const MyBooks = () => {
 
                           <button
                             type="button"
+                            onClick={() => setDeletingBook(book)}
                             aria-label={`Delete ${book.name}`}
                             className="flex cursor-pointer items-center gap-2 rounded-lg border border-red-200 bg-(--surface) px-3 py-2.5 text-xs font-semibold text-red-500 transition-all duration-300 hover:bg-red-50"
                           >
@@ -299,6 +312,16 @@ const MyBooks = () => {
           book={editingBook}
           onClose={() => setEditingBook(null)}
           onUpdated={handleBookUpdated}
+        />
+      )}
+
+      {/* Delete Book Dialog */}
+      {deletingBook && (
+        <DeleteBookDialog
+          key={deletingBook._id}
+          book={deletingBook}
+          onClose={() => setDeletingBook(null)}
+          onDeleted={handleBookDeleted}
         />
       )}
     </main>
