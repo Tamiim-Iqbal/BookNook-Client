@@ -1,49 +1,58 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Pencil, Trash2, BookOpen } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
-const myBooks = [
-  {
-    id: 1,
-    title: "The Alchemist",
-    author: "Paulo Coelho",
-    category: "Fiction",
-    copies: 5,
-    image:
-      "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500",
-  },
-  {
-    id: 2,
-    title: "Atomic Habits",
-    author: "James Clear",
-    category: "Non-Fiction",
-    copies: 3,
-    image:
-      "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=500",
-  },
-  {
-    id: 3,
-    title: "Rich Dad Poor Dad",
-    author: "Robert T. Kiyosaki",
-    category: "Finance",
-    copies: 4,
-    image:
-      "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500",
-  },
-  {
-    id: 4,
-    title: "Deep Work",
-    author: "Cal Newport",
-    category: "Productivity",
-    copies: 2,
-    image:
-      "https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=500",
-  },
-];
+type Book = {
+  _id: string;
+  name: string;
+  author: string;
+  category: string;
+  copy?: number;
+  img: string;
+};
 
 const MyBooks = () => {
+  const { user } = useAuth();
+
+  const [myBooks, setMyBooks] = useState<Book[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user?.email) {
+      setMyBooks([]);
+      setIsLoading(false);
+      return;
+    }
+
+    const fetchMyBooks = async () => {
+      try {
+        setIsLoading(true);
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/books/my-books?email=${encodeURIComponent(user.email)}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch books");
+        }
+
+        const data = await response.json();
+        setMyBooks(data);
+      } catch (error) {
+        console.error("Error fetching my books:", error);
+        setMyBooks([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMyBooks();
+  }, [user?.email]);
+
   return (
     <main className="min-h-screen bg-(--main-bg) pb-16">
       {/* Hero Section */}
@@ -85,8 +94,15 @@ const MyBooks = () => {
           </span>
         </div>
 
-        {/* Books Table / Empty State */}
-        {myBooks.length > 0 ? (
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="flex items-center justify-center rounded-2xl border border-(--border) bg-(--surface) py-16">
+            <p className="text-sm font-medium text-(--text-muted)">
+              Loading your books...
+            </p>
+          </div>
+        ) : myBooks.length > 0 ? (
+          /* Books Table */
           <div className="overflow-hidden rounded-2xl border border-(--border) bg-(--surface) shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[800px] border-collapse text-left">
@@ -96,11 +112,11 @@ const MyBooks = () => {
                       Book
                     </th>
 
-                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-(--text-secondary)">
+                    <th className="px-4 py-4 text-xs font-bold uppercase tracking-wider text-(--text-secondary)">
                       Title
                     </th>
 
-                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-(--text-secondary)">
+                    <th className="pl-1 py-4 text-xs font-bold uppercase tracking-wider text-(--text-secondary)">
                       Category
                     </th>
 
@@ -108,7 +124,7 @@ const MyBooks = () => {
                       Available Copies
                     </th>
 
-                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-(--text-secondary)">
+                    <th className="px-6 pl-18 py-4 text-xs font-bold uppercase tracking-wider text-(--text-secondary)">
                       Action
                     </th>
                   </tr>
@@ -117,24 +133,26 @@ const MyBooks = () => {
                 <tbody>
                   {myBooks.map((book) => (
                     <tr
-                      key={book.id}
+                      key={book._id}
                       className="border-b border-(--border) transition-colors duration-200 last:border-0 hover:bg-(--main-bg)"
                     >
                       {/* Book Image */}
                       <td className="px-6 py-4">
-                        <div className="h-[68px] w-[52px] overflow-hidden rounded-lg bg-(--main-bg)">
-                          <img
-                            src={book.image}
-                            alt={book.title}
-                            className="h-full w-full object-cover"
+                        <div className="relative h-[68px] w-[52px] overflow-hidden rounded-lg bg-(--main-bg)">
+                          <Image
+                            src={book.img}
+                            alt={book.name}
+                            fill
+                            sizes="52px"
+                            className="object-cover"
                           />
                         </div>
                       </td>
 
                       {/* Book Title */}
-                      <td className="px-6 py-4">
-                        <p className="text-sm font-semibold text-(--text-primary)">
-                          {book.title}
+                      <td className="px-4 py-4">
+                        <p className="text-base font-semibold text-(--text-primary)">
+                          {book.name}
                         </p>
 
                         <p className="mt-1 text-xs text-(--text-muted)">
@@ -143,7 +161,7 @@ const MyBooks = () => {
                       </td>
 
                       {/* Category */}
-                      <td className="px-6 py-4">
+                      <td className="pl-0 pr-8 py-4">
                         <span className="inline-flex rounded-full bg-(--primary-bg) px-3 py-1.5 text-xs font-medium text-(--secondary)">
                           {book.category}
                         </span>
@@ -151,10 +169,11 @@ const MyBooks = () => {
 
                       {/* Available Copies */}
                       <td className="px-6 py-4">
-                        <span className="text-sm font-semibold text-(--text-primary)">
-                          {book.copies}
+                        <span className="text-sm font-semibold text-(--text-primary) ml-4 sm:ml-8">
+                          {book.copy ?? 0}
                         </span>
-                        <span className="ml-1 text-xs text-(--text-muted)">
+
+                        <span className="ml-2 text-xs text-(--text-muted)">
                           Copies
                         </span>
                       </td>
@@ -164,8 +183,8 @@ const MyBooks = () => {
                         <div className="flex items-center gap-2">
                           <button
                             type="button"
-                            aria-label={`Edit ${book.title}`}
-                            className="flex cursor-pointer items-center gap-2 rounded-lg border border-(--border) bg-(--surface) px-3 py-2.5 text-xs font-semibold text-(--text-secondary) transition-all duration-300 hover:border-(--secondary) hover:bg-(--primary-bg) hover:text-(--secondary)"
+                            aria-label={`Edit ${book.name}`}
+                            className="flex cursor-pointer items-center gap-2 rounded-lg border border-(--border) bg-(--surface) px-3 py-2.5 text-xs font-semibold text-(--text-secondary) transition-all duration-300 hover:border-(--secondary)  hover:text-(--secondary)"
                           >
                             <Pencil size={14} />
                             Edit
@@ -173,7 +192,7 @@ const MyBooks = () => {
 
                           <button
                             type="button"
-                            aria-label={`Delete ${book.title}`}
+                            aria-label={`Delete ${book.name}`}
                             className="flex cursor-pointer items-center gap-2 rounded-lg border border-red-200 bg-(--surface) px-3 py-2.5 text-xs font-semibold text-red-500 transition-all duration-300 hover:bg-red-50"
                           >
                             <Trash2 size={14} />
