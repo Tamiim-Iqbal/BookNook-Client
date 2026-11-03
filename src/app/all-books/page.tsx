@@ -2,6 +2,13 @@ import React from "react";
 import { Book } from "@/types/book";
 import { BookOpen } from "lucide-react";
 import BookCard from "../components/books/BookCard";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "All Books | BookNook",
+  description:
+    "Explore the BookNook collection of fiction, non-fiction, technology, science, and more. Discover your next favorite book.",
+};
 
 const AllBooks = async () => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/books`, {
@@ -13,6 +20,7 @@ const AllBooks = async () => {
   }
 
   const books: Book[] = await response.json();
+
 
   return (
     <main className="min-h-screen bg-(--main-bg)">
