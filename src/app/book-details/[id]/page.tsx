@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   Star,
 } from "lucide-react";
+import BorrowBookButton from "@/app/components/books/BorrowBookButton";
 
 type BookDetailsProps = {
   params: Promise<{
@@ -19,9 +20,9 @@ const BookDetails = async ({ params }: BookDetailsProps) => {
   const { id } = await params;
 
   const response = await fetch(
-  `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/book-details/${id}`,
-  { cache: "no-store" }
-);
+    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/book-details/${id}`,
+    { cache: "no-store" }
+  );
 
   if (response.status === 404) {
     notFound();
@@ -158,17 +159,11 @@ const BookDetails = async ({ params }: BookDetailsProps) => {
 
               {/* Action Buttons */}
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <button
-                  disabled={!isAvailable}
-                  className={`inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold transition-all ${
-                    isAvailable
-                      ? "bg-(--primary) text-white hover:bg-(--primary-hover) active:scale-[0.98] cursor-pointer"
-                      : "cursor-not-allowed bg-(--secondary-bg) text-(--text-muted)"
-                  }`}
-                >
-                  <BookOpen size={18} />
-                  {isAvailable ? "Borrow This Book" : "Not Available"}
-                </button>
+                <BorrowBookButton
+                  bookId={book._id}
+                  bookName={book.name}
+                  isAvailable={isAvailable}
+                />
 
                 <Link
                   href="/all-books"

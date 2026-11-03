@@ -1,47 +1,71 @@
+
 "use client";
 
-import { CalendarDays, RotateCcw, BookOpen } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  CalendarDays,
+  RotateCcw,
+  BookOpen,
+} from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
-const borrowedBooks = [
-  {
-    id: 1,
-    title: "The Alchemist",
-    author: "Paulo Coelho",
-    image:
-      "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500",
-    borrowDate: "October 20, 2026",
-    returnDate: "November 05, 2026",
-  },
-  {
-    id: 2,
-    title: "Atomic Habits",
-    author: "James Clear",
-    image:
-      "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=500",
-    borrowDate: "October 22, 2026",
-    returnDate: "November 08, 2026",
-  },
-  {
-    id: 3,
-    title: "Rich Dad Poor Dad",
-    author: "Robert T. Kiyosaki",
-    image:
-      "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500",
-    borrowDate: "October 25, 2026",
-    returnDate: "November 10, 2026",
-  },
-  {
-    id: 4,
-    title: "Deep Work",
-    author: "Cal Newport",
-    image:
-      "https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=500",
-    borrowDate: "October 27, 2026",
-    returnDate: "November 12, 2026",
-  },
-];
+type BorrowedBook = {
+  _id: string;
+  bookId: string;
+  name: string;
+  author: string;
+  category: string;
+  img: string;
+  borrowedAt: string;
+  returnDate: string;
+  status: string;
+};
+
+const formatDate = (date: string) => {
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "2-digit",
+  });
+};
 
 const MyBorrows = () => {
+  const { user, isPending: isAuthPending } = useAuth();
+
+  const [borrowedBooks, setBorrowedBooks] = useState<BorrowedBook[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const showSkeleton =
+    isAuthPending || (!!user?.email && isLoading);
+
+  useEffect(() => {
+    if (isAuthPending || !user?.email) return;
+
+    const fetchMyBorrows = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/my-borrows?email=${encodeURIComponent(user.email)}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch borrowed books");
+        }
+
+        const data = await response.json();
+        setBorrowedBooks(data);
+      } catch (error) {
+        console.error("Error fetching borrowed books:", error);
+        setBorrowedBooks([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMyBorrows();
+  }, [user?.email, isAuthPending]);
+
   return (
     <main className="min-h-screen bg-(--main-bg) pb-16">
       {/* Hero Section */}
@@ -84,8 +108,69 @@ const MyBorrows = () => {
           </span>
         </div>
 
-        {/* Books Table / Empty State */}
-        {borrowedBooks.length > 0 ? (
+        {/* Loading State */}
+        {showSkeleton ? (
+          <div className="overflow-hidden rounded-2xl border border-(--border) bg-(--surface) shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[800px] border-collapse text-left">
+                <thead>
+                  <tr className="border-b border-(--border) bg-(--main-bg)">
+                    {[
+                      "Book",
+                      "Title",
+                      "Borrow Date",
+                      "Return Date",
+                      "Action",
+                    ].map((heading) => (
+                      <th
+                        key={heading}
+                        className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-(--text-secondary)"
+                      >
+                        {heading}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {[1, 2, 3, 4].map((item) => (
+                    <tr
+                      key={item}
+                      className="border-b border-(--border) last:border-0"
+                    >
+                      {/* Image Skeleton */}
+                      <td className="px-6 py-4">
+                        <div className="h-[68px] w-[52px] animate-pulse rounded-lg bg-(--primary-bg)" />
+                      </td>
+
+                      {/* Title Skeleton */}
+                      <td className="px-6 py-4">
+                        <div className="h-4 w-36 animate-pulse rounded bg-(--primary-bg)" />
+                        <div className="mt-2 h-3 w-24 animate-pulse rounded bg-(--primary-bg)" />
+                      </td>
+
+                      {/* Borrow Date Skeleton */}
+                      <td className="px-6 py-4">
+                        <div className="h-4 w-32 animate-pulse rounded bg-(--primary-bg)" />
+                      </td>
+
+                      {/* Return Date Skeleton */}
+                      <td className="px-6 py-4">
+                        <div className="h-4 w-32 animate-pulse rounded bg-(--primary-bg)" />
+                      </td>
+
+                      {/* Action Skeleton */}
+                      <td className="px-6 py-4">
+                        <div className="h-10 w-28 animate-pulse rounded-lg bg-(--primary-bg)" />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : borrowedBooks.length > 0 ? (
+          /* Borrowed Books Table */
           <div className="overflow-hidden rounded-2xl border border-(--border) bg-(--surface) shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[800px] border-collapse text-left">
@@ -118,16 +203,19 @@ const MyBorrows = () => {
                 <tbody>
                   {borrowedBooks.map((book) => (
                     <tr
-                      key={book.id}
+                      key={book._id}
                       className="border-b border-(--border) transition-colors duration-200 last:border-0 hover:bg-(--main-bg)"
                     >
                       {/* Book Image */}
                       <td className="px-6 py-4">
-                        <div className="h-[68px] w-[52px] overflow-hidden rounded-lg bg-(--main-bg)">
-                          <img
-                            src={book.image}
-                            alt={book.title}
-                            className="h-full w-full object-cover"
+                        <div className="relative h-[68px] w-[52px] overflow-hidden rounded-lg bg-(--main-bg)">
+                          <Image
+                            src={book.img}
+                            alt={book.name}
+                            fill
+                            sizes="52px"
+                            className="object-cover"
+                            unoptimized
                           />
                         </div>
                       </td>
@@ -135,7 +223,7 @@ const MyBorrows = () => {
                       {/* Book Title */}
                       <td className="px-6 py-4">
                         <p className="text-sm font-semibold text-(--text-primary)">
-                          {book.title}
+                          {book.name}
                         </p>
 
                         <p className="mt-1 text-xs text-(--text-muted)">
@@ -150,7 +238,7 @@ const MyBorrows = () => {
                             size={15}
                             className="shrink-0 text-(--secondary)"
                           />
-                          {book.borrowDate}
+                          {formatDate(book.borrowedAt)}
                         </div>
                       </td>
 
@@ -161,7 +249,7 @@ const MyBorrows = () => {
                             size={15}
                             className="shrink-0 text-(--secondary)"
                           />
-                          {book.returnDate}
+                          {formatDate(book.returnDate)}
                         </div>
                       </td>
 
@@ -185,10 +273,7 @@ const MyBorrows = () => {
           /* Empty State */
           <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-(--border) bg-(--surface) px-5 py-14 text-center shadow-sm sm:py-16">
             <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-(--primary-bg)">
-              <BookOpen
-                size={30}
-                className="text-(--secondary)"
-              />
+              <BookOpen size={30} className="text-(--secondary)" />
             </div>
 
             <h3 className="font-serif text-2xl font-bold text-(--text-primary)">
@@ -200,12 +285,12 @@ const MyBorrows = () => {
               and discover your next favourite read!
             </p>
 
-            <a
+            <Link
               href="/books"
               className="mt-6 rounded-lg border border-(--secondary) bg-(--secondary) px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90"
             >
               Explore Books
-            </a>
+            </Link>
           </div>
         )}
       </section>
