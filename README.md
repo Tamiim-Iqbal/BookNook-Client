@@ -66,17 +66,25 @@ npm run build     # Create a production build
 npm run start     # Serve the production build
 ```
 
-This repository does not currently include an automated test suite.
+This repository does not currently include an automated test suite. For focused validation of a single file, run:
+
+```bash
+npx eslint src/app/page.tsx
+```
 
 ## Application Structure
 
 - `src/app/` contains App Router routes, layouts, loading states, and error boundaries.
 - `src/app/components/home/` contains the shared home-page shell, including navigation, hero content, and footer.
 - `src/app/components/books/` contains reusable book cards and book actions such as borrowing, editing, and deleting.
+- `src/app/components/ui/` contains shared shadcn-style UI primitives.
 - `src/app/context/AuthContext.tsx` provides the current Better Auth session to client components.
-- `src/lib/` contains Better Auth setup and shared utilities.
+- `src/app/api/auth/[...all]/route.js` exposes the Better Auth API route.
+- `src/lib/` contains Better Auth setup, client helpers, token utilities, and shared utilities.
 - `src/types/book.ts` defines the shared `Book` data contract.
 - `src/proxy.ts` protects authenticated routes and preserves the requested callback URL when redirecting to sign-in.
+
+Public book collection reads are implemented in server components and use the backend API. Interactive actions such as borrowing, returning, adding, editing, and deleting books run in client components so they can access the current Better Auth session and update the UI.
 
 ## Main Routes
 
@@ -92,12 +100,15 @@ This repository does not currently include an automated test suite.
 | `/profile` | Manage the user profile |
 | `/sign-in` | Sign in with email/password or Google |
 | `/sign-up` | Create an account with email/password or Google |
+| `/api/auth/[...all]` | Better Auth API handler |
 
 ## Backend Integration
 
 Book data and borrowing operations are handled by the separate backend configured through `NEXT_PUBLIC_BACKEND_API_URL`. The client uses endpoints for latest books, the complete collection, book details, adding and editing books, borrowing and returning books, and user-specific book lists.
 
 Public collection pages fetch data in server components. Interactive operations and session-dependent pages use client components with Better Auth session state.
+
+The client uses endpoints for latest books (`/books/latest`), the full collection (`/books`), details (`/book-details/:id`), book management (`/books`), borrowing (`/borrow`), returning, and user-specific book and borrow lists. Keep `NEXT_PUBLIC_BACKEND_API_URL` pointed at the running backend API.
 
 The backend repository is available at [BookNook-Server](https://github.com/Tamiim-Iqbal/BookNook-Server).
 
