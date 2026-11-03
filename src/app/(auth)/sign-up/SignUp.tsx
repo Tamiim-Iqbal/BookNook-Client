@@ -163,7 +163,7 @@ const SignUp = () => {
 
     return (
         <main className="flex min-h-[calc(100vh-72px)] items-center justify-center bg-(--main-bg) px-4 pt-6 sm:px-6">
-            <div className="mx-auto grid w-full max-w-5xl overflow-hidden rounded-3xl border border-(--border) bg-(--primary-bg) shadow-sm lg:grid-cols-2">
+            <div className="mx-auto grid w-full max-w-5xl overflow-hidden rounded-3xl border border-(--border) bg-(--primary-bg) shadow-sm lg:grid-cols-[40%_60%]">
 
                 {/* Left: Visual Panel */}
                 <section className="relative hidden flex-col justify-between overflow-hidden bg-(--secondary) p-9 text-white lg:flex">
