@@ -9,6 +9,15 @@ import {
   Star,
 } from "lucide-react";
 import BorrowBookButton from "@/app/components/books/BorrowBookButton";
+import type { Metadata } from "next";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+
+export const metadata: Metadata = {
+  title: "Details | BookNook",
+  description:
+    "Sign in to your BookNook account to continue your reading journey, explore books, and manage your library.",
+};
 
 type BookDetailsProps = {
   params: Promise<{
@@ -19,9 +28,23 @@ type BookDetailsProps = {
 const BookDetails = async ({ params }: BookDetailsProps) => {
   const { id } = await params;
 
+  // JWT token retrieval from cookies
+  const jwtToken = await auth.api.getToken({
+    headers: await headers(),
+    }
+  );
+
+  const token = jwtToken?.token;
+  // console.log("JWT Token:", token); 
+
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/book-details/${id}`,
-    { cache: "no-store" }
+    { 
+      cache: "no-store",
+      headers: {
+        authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
+    }
+     },
   );
 
   if (response.status === 404) {

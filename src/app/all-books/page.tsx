@@ -3,6 +3,8 @@ import { Book } from "@/types/book";
 import { BookOpen } from "lucide-react";
 import BookCard from "../components/books/BookCard";
 import type { Metadata } from "next";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "All Books | BookNook",
