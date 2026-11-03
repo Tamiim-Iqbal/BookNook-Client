@@ -74,9 +74,9 @@ const Page = () => {
 
   const joinedDate = user.createdAt
     ? new Date(user.createdAt).toLocaleDateString("en-US", {
-        month: "long",
-        year: "numeric",
-      })
+      month: "long",
+      year: "numeric",
+    })
     : "Not available";
 
   return (
@@ -107,6 +107,8 @@ const Page = () => {
                 <Image
                   src={user.image}
                   alt={user.name || "Profile"}
+                  width={200}
+                  height={200}
                   className="size-full object-cover"
                 />
               ) : (
@@ -186,11 +188,10 @@ const Page = () => {
               </div>
 
               <span
-                className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                  user.emailVerified
+                className={`rounded-full px-3 py-1 text-xs font-semibold ${user.emailVerified
                     ? "bg-green-500/10 text-green-600"
                     : "bg-amber-500/10 text-amber-600"
-                }`}
+                  }`}
               >
                 {user.emailVerified ? "Verified" : "Pending"}
               </span>

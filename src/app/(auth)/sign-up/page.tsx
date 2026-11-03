@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -15,7 +14,7 @@ import {
     LibraryBig,
 } from "lucide-react";
 import Image from "next/image";
-import { signUp } from "@/lib/auth-client";
+import { signIn, signUp } from "@/lib/auth-client";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
@@ -25,6 +24,13 @@ const SignUp = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [passwordError, setPasswordError] = useState("");
+
+    const handleGoogleSignUp = async () => {
+        const resData = await signIn.social({
+            provider: "google",
+        });
+        console.log("Google Sign Up Response:", resData);
+    };
 
     // Password validation
     const validatePassword = (password: string) => {
@@ -227,7 +233,7 @@ const SignUp = () => {
                     </div>
 
                     {/* Google Sign Up */}
-                    <button
+                    <button onClick={handleGoogleSignUp}
                         type="button"
                         className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-(--border) bg-(--main-bg) px-4 py-2.5 text-sm font-semibold text-(--text-primary) transition-colors hover:bg-(--main-bg)/70"
                     >
