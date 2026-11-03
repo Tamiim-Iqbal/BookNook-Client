@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuth } from "@/app/context/AuthContext";
+import { authClient } from "@/lib/auth-client";
 
 const categories = [
   "Fiction",
@@ -87,12 +88,18 @@ const EditBookDialog = ({
         rating: Number(bookData.rating),
       };
 
+      // JWT token retrieval from cookies
+      const { data, error } = await authClient.token();
+      const token = data?.token;
+      // console.log("JWT Token:", token); 
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/books/${book._id}`,
         {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
+            authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
           },
           body: JSON.stringify(updatedBookData),
         }
@@ -236,9 +243,8 @@ const EditBookDialog = ({
 
                   <ChevronDown
                     size={17}
-                    className={`shrink-0 text-(--text-secondary) transition-transform ${
-                      isCategoryOpen ? "rotate-180" : ""
-                    }`}
+                    className={`shrink-0 text-(--text-secondary) transition-transform ${isCategoryOpen ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
 
@@ -252,11 +258,10 @@ const EditBookDialog = ({
                           setSelectedCategory(category);
                           setIsCategoryOpen(false);
                         }}
-                        className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition ${
-                          selectedCategory === category
+                        className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition ${selectedCategory === category
                             ? "bg-(--secondary)/10 font-medium text-(--secondary)"
                             : "text-(--text-primary) hover:bg-(--secondary)/10 hover:text-(--secondary)"
-                        }`}
+                          }`}
                       >
                         {category}
 

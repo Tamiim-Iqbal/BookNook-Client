@@ -34,12 +34,18 @@ const BorrowBookButton = ({
       setIsBorrowing(true);
       setError("");
 
+      // JWT token retrieval from cookies
+      const { data, error } = await authClient.token();
+      const token = data?.token;
+      // console.log("JWT Token:", token); 
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/borrow`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
           },
           body: JSON.stringify({
             bookId,
@@ -51,10 +57,10 @@ const BorrowBookButton = ({
         }
       );
 
-      const data = await response.json();
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to borrow book");
+        throw new Error(result.message || "Failed to borrow book");
       }
 
       setIsModalOpen(false);
@@ -81,11 +87,10 @@ const BorrowBookButton = ({
       <button
         disabled={!isAvailable || isPending || !user}
         onClick={() => setIsModalOpen(true)}
-        className={`inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold transition-all ${
-          isAvailable && !isPending && user
+        className={`inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold transition-all ${isAvailable && !isPending && user
             ? "cursor-pointer bg-(--primary) text-white hover:bg-(--primary-hover) active:scale-[0.98]"
             : "cursor-not-allowed bg-(--secondary-bg) text-(--text-muted)"
-        }`}
+          }`}
       >
         <BookOpen size={18} />
 

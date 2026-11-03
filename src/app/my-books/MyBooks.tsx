@@ -7,6 +7,7 @@ import { Pencil, Trash2, BookOpen } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import EditBookDialog, { type Book } from "../components/books/EditBookDialog";
 import DeleteBookDialog from "../components/books/DeleteBookDialog";
+import { authClient } from "@/lib/auth-client";
 
 const MyBooks = () => {
   const { user, isPending: isAuthPending } = useAuth();
@@ -14,37 +15,70 @@ const MyBooks = () => {
   const [myBooks, setMyBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
-
   const [deletingBook, setDeletingBook] = useState<Book | null>(null);
 
   const showSkeleton =
     isAuthPending || (!!user?.email && isLoading);
 
-  useEffect(() => {
-    if (isAuthPending || !user?.email) return;
+  // Fetch My Books
+  
+useEffect(() => {
+  if (isAuthPending || !user?.email) return;
 
-    const fetchMyBooks = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/my-books?email=${encodeURIComponent(user.email)}`
-        );
+  let isMounted = true;
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch books");
+  const fetchMyBooks = async () => {
+    try {
+      setIsLoading(true);
+
+      // Get JWT token
+      const { data, error } = await authClient.token();
+
+      if (error || !data?.token) {
+        throw new Error("Failed to retrieve JWT token");
+      }
+
+      const token = data.token;
+
+      // Fetch books with Authorization header
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/my-books?email=${encodeURIComponent(user.email)}`,
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
         }
+      );
 
-        const data = await response.json();
-        setMyBooks(data);
-      } catch (error) {
-        console.error("Error fetching my books:", error);
+      if (!response.ok) {
+        throw new Error("Failed to fetch books");
+      }
+
+      const books = await response.json();
+
+      if (isMounted) {
+        setMyBooks(books);
+      }
+    } catch (error) {
+      console.error("Error fetching my books:", error);
+
+      if (isMounted) {
         setMyBooks([]);
-      } finally {
+      }
+    } finally {
+      if (isMounted) {
         setIsLoading(false);
       }
-    };
+    }
+  };
 
-    fetchMyBooks();
-  }, [user?.email, isAuthPending]);
+  fetchMyBooks();
+
+  return () => {
+    isMounted = false;
+  };
+}, [user?.email, isAuthPending]);
+
 
   // Update book in local state after successful PATCH
   const handleBookUpdated = (updatedBook: Book) => {
@@ -137,28 +171,23 @@ const MyBooks = () => {
                       key={item}
                       className="border-b border-(--border) last:border-0"
                     >
-                      {/* Book Image Skeleton */}
                       <td className="px-6 py-4">
                         <div className="h-[68px] w-[52px] animate-pulse rounded-lg bg-(--primary-bg)" />
                       </td>
 
-                      {/* Title Skeleton */}
                       <td className="px-4 py-4">
                         <div className="h-4 w-36 animate-pulse rounded bg-(--primary-bg)" />
                         <div className="mt-2 h-3 w-24 animate-pulse rounded bg-(--primary-bg)" />
                       </td>
 
-                      {/* Category Skeleton */}
                       <td className="px-4 py-4">
                         <div className="h-7 w-20 animate-pulse rounded-full bg-(--primary-bg)" />
                       </td>
 
-                      {/* Copies Skeleton */}
                       <td className="px-6 py-4">
                         <div className="ml-4 h-4 w-16 animate-pulse rounded bg-(--primary-bg)" />
                       </td>
 
-                      {/* Action Skeleton */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           <div className="h-10 w-20 animate-pulse rounded-lg bg-(--primary-bg)" />

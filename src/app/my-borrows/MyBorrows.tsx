@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -10,6 +11,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
+import { authClient } from "@/lib/auth-client";
 
 type BorrowedBook = {
   _id: string;
@@ -36,53 +38,96 @@ const MyBorrows = () => {
 
   const [borrowedBooks, setBorrowedBooks] = useState<BorrowedBook[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
   const [returningId, setReturningId] = useState<string | null>(null);
 
   const showSkeleton =
     isAuthPending || (!!user?.email && isLoading);
 
+  // Fetch My Borrows
   useEffect(() => {
     if (isAuthPending || !user?.email) return;
 
+    let isMounted = true;
+
     const fetchMyBorrows = async () => {
       try {
+        // Get JWT token
+        const { data, error } = await authClient.token();
+
+        if (error || !data?.token) {
+          throw new Error("Failed to retrieve JWT token");
+        }
+
+        const token = data.token;
+
+        // Fetch borrowed books with Authorization header
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/my-borrows?email=${encodeURIComponent(user.email)}`
+          `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/my-borrows?email=${encodeURIComponent(user.email)}`,
+          {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          }
         );
 
         if (!response.ok) {
           throw new Error("Failed to fetch borrowed books");
         }
 
-        const data = await response.json();
-        setBorrowedBooks(data);
+        const result = await response.json();
+
+        if (isMounted) {
+          setBorrowedBooks(result);
+        }
       } catch (error) {
         console.error("Error fetching borrowed books:", error);
-        setBorrowedBooks([]);
+
+        if (isMounted) {
+          setBorrowedBooks([]);
+        }
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchMyBorrows();
+
+    return () => {
+      isMounted = false;
+    };
   }, [user?.email, isAuthPending]);
 
+  // Return Book
   const handleReturn = async (borrowId: string) => {
     try {
       setReturningId(borrowId);
 
+      // Get JWT token
+      const { data, error } = await authClient.token();
+
+      if (error || !data?.token) {
+        throw new Error("Failed to retrieve JWT token");
+      }
+
+      const token = data.token;
+
+      // Return book with Authorization header
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/return/${borrowId}`,
         {
           method: "PATCH",
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
         }
       );
 
-      const data = await response.json();
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to return book");
+        throw new Error(result.message || "Failed to return book");
       }
 
       // Remove returned book from local state
@@ -174,28 +219,23 @@ const MyBorrows = () => {
                       key={item}
                       className="border-b border-(--border) last:border-0"
                     >
-                      {/* Image Skeleton */}
                       <td className="px-6 py-4">
                         <div className="h-[68px] w-[52px] animate-pulse rounded-lg bg-(--primary-bg)" />
                       </td>
 
-                      {/* Title Skeleton */}
                       <td className="px-6 py-4">
                         <div className="h-4 w-36 animate-pulse rounded bg-(--primary-bg)" />
                         <div className="mt-2 h-3 w-24 animate-pulse rounded bg-(--primary-bg)" />
                       </td>
 
-                      {/* Borrow Date Skeleton */}
                       <td className="px-6 py-4">
                         <div className="h-4 w-32 animate-pulse rounded bg-(--primary-bg)" />
                       </td>
 
-                      {/* Return Date Skeleton */}
                       <td className="px-6 py-4">
                         <div className="h-4 w-32 animate-pulse rounded bg-(--primary-bg)" />
                       </td>
 
-                      {/* Action Skeleton */}
                       <td className="px-6 py-4">
                         <div className="h-10 w-28 animate-pulse rounded-lg bg-(--primary-bg)" />
                       </td>
@@ -210,7 +250,6 @@ const MyBorrows = () => {
           <div className="overflow-hidden rounded-2xl border border-(--border) bg-(--surface) shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[800px] border-collapse text-left">
-                {/* Table Header */}
                 <thead>
                   <tr className="border-b border-(--border) bg-(--main-bg)">
                     <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-(--text-secondary)">
@@ -235,7 +274,6 @@ const MyBorrows = () => {
                   </tr>
                 </thead>
 
-                {/* Table Body */}
                 <tbody>
                   {borrowedBooks.map((book) => (
                     <tr
@@ -298,7 +336,9 @@ const MyBorrows = () => {
                           className="flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-(--secondary) bg-(--secondary) px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                         >
                           <RotateCcw size={14} />
-                          {returningId === book._id ? "Returning..." : "Return Book"}
+                          {returningId === book._id
+                            ? "Returning..."
+                            : "Return Book"}
                         </button>
                       </td>
                     </tr>

@@ -1,10 +1,10 @@
-
 "use client";
 
 import { useState } from "react";
 import { AlertTriangle, X, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import type { Book } from "./EditBookDialog";
+import { authClient } from "@/lib/auth-client";
 
 type DeleteBookDialogProps = {
   book: Book;
@@ -23,10 +23,17 @@ const DeleteBookDialog = ({
     setIsDeleting(true);
 
     try {
+      // JWT token retrieval from cookies
+            const {data, error } = await authClient.token();
+            const token = data?.token;
+            // console.log("JWT Token:", token);
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/books/${book._id}`,
         {
           method: "DELETE",
+          headers: {
+            authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
+          },
         }
       );
 

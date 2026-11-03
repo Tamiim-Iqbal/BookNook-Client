@@ -13,6 +13,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { authClient } from "@/lib/auth-client";
 
 const categories = [
   "Fiction",
@@ -78,8 +79,10 @@ const AddBook = () => {
         },
       };
 
-      const API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
-      console.log("Backend URL:", API_URL);
+      // JWT token retrieval from cookies
+      const {data, error } = await authClient.token();
+      const token = data?.token;
+      // console.log("JWT Token:", token); 
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/books`,
@@ -87,6 +90,7 @@ const AddBook = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
           },
           body: JSON.stringify(newBook),
         }
