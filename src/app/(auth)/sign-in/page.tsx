@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import {
   ArrowRight,
   BookOpen,
@@ -20,7 +21,22 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleEmailSignIn = async ( e: React.FormEvent<HTMLFormElement> ) => {
+  const searchParams = useSearchParams();
+
+  // Get the previous page URL
+  const requestedCallback = searchParams.get("callbackUrl");
+
+  // Allow only internal application paths
+  const callbackURL =
+    requestedCallback?.startsWith("/") &&
+    !requestedCallback.startsWith("//") &&
+    !requestedCallback.includes("\\")
+      ? requestedCallback
+      : "/";
+
+  const handleEmailSignIn = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
 
     if (isLoading) return;
@@ -37,7 +53,7 @@ const SignIn = () => {
 
       const { data, error } = await signIn.email({
         ...user,
-        callbackURL: "/",
+        callbackURL,
       });
 
       if (error) {
@@ -46,7 +62,7 @@ const SignIn = () => {
       }
 
       if (data) {
-        toast.success("User signed in successfully!");
+        toast.success("Signed in successfully!");
       }
     } catch {
       toast.error("Something went wrong. Please try again.");

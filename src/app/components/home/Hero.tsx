@@ -133,7 +133,7 @@ const HeroSection = () => {
                     {/* Browse Books Link */}
                     <div className="mt-7">
                       <Link
-                        href="#books"
+                        href="/all-books"
                         className="inline-flex h-[48px] items-center gap-4 rounded-lg border border-(--secondary) bg-(--secondary) px-7 text-[13px] font-semibold tracking-wide text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-(--secondary-hover) hover:bg-(--secondary-hover)"
                       >
                         Browse books

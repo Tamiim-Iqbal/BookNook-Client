@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -25,6 +26,23 @@ const SignUp = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [passwordError, setPasswordError] = useState("");
 
+    // Password validation
+    const validatePassword = (password: string) => {
+        if (password.length < 6) {
+            return "Password must be at least 6 characters long.";
+        }
+
+        if (!/[A-Z]/.test(password)) {
+            return "Password must contain at least one uppercase letter.";
+        }
+
+        if (!/[a-z]/.test(password)) {
+            return "Password must contain at least one lowercase letter.";
+        }
+
+        return "";
+    };
+
     const handleEmailSignUp = async (
         e: React.FormEvent<HTMLFormElement>
     ) => {
@@ -39,18 +57,50 @@ const SignUp = () => {
             confirmPassword: string;
         };
 
-        // Password validation
-        if (user.password.length < 8) {
-            const message = "Password must be at least 8 characters long";
+        // Name validation
+        if (!user.name.trim()) {
+            toast.error("Please enter your full name.");
+            return;
+        }
 
+        // Email validation
+        if (!user.email.trim()) {
+            toast.error("Please enter your email address.");
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(user.email)) {
+            toast.error("Please enter a valid email address.");
+            return;
+        }
+
+        // Empty password validation
+        if (!user.password) {
+            const message = "Please enter your password.";
             setPasswordError(message);
             toast.error(message);
+            return;
+        }
+
+        // Password validation
+        const validationError = validatePassword(user.password);
+
+        if (validationError) {
+            setPasswordError(validationError);
+            toast.error(validationError);
             return;
         }
 
         setPasswordError("");
 
         // Confirm password validation
+        if (!user.confirmPassword) {
+            toast.error("Please confirm your password.");
+            return;
+        }
+
         if (user.password !== user.confirmPassword) {
             toast.error("Password and Confirm Password do not match");
             return;
@@ -58,8 +108,8 @@ const SignUp = () => {
 
         try {
             const { data, error } = await signUp.email({
-                name: user.name,
-                email: user.email,
+                name: user.name.trim(),
+                email: user.email.trim(),
                 password: user.password,
             });
 
@@ -70,8 +120,8 @@ const SignUp = () => {
             }
 
             if (data) {
-                toast.success("User created successfully!");
-                console.log("User created successfully:", data);
+                toast.success("Signup successfully!");
+                console.log("Signup successfully!", data);
 
                 router.push("/sign-in");
             }
@@ -87,7 +137,6 @@ const SignUp = () => {
 
                 {/* Left: Visual Panel */}
                 <section className="relative hidden flex-col justify-between overflow-hidden bg-(--secondary) p-9 text-white lg:flex">
-                    {/* Decorative Background */}
                     <div className="absolute -top-28 -right-28 size-80 rounded-full border border-white/10" />
                     <div className="absolute -top-16 -right-16 size-56 rounded-full border border-white/10" />
                     <div className="absolute -bottom-36 -left-28 size-96 rounded-full border border-white/10" />
@@ -172,7 +221,6 @@ const SignUp = () => {
 
                     {/* Heading */}
                     <div className="mb-6">
-                        
                         <h1 className="font-serif text-3xl font-bold text-(--text-primary) sm:text-4xl">
                             Create your account
                         </h1>
@@ -202,8 +250,11 @@ const SignUp = () => {
                     </div>
 
                     {/* Form */}
-                    <form onSubmit={handleEmailSignUp} className="space-y-3">
-
+                    <form
+                        onSubmit={handleEmailSignUp}
+                        noValidate
+                        className="space-y-3"
+                    >
                         {/* Name */}
                         <div>
                             <label
@@ -223,7 +274,6 @@ const SignUp = () => {
                                     id="name"
                                     name="name"
                                     type="text"
-                                    required
                                     placeholder="Enter your full name"
                                     autoComplete="name"
                                     className="w-full rounded-xl border border-(--border) bg-(--main-bg) py-2.5 pr-4 pl-11 text-sm text-(--text-primary) outline-none transition-all placeholder:text-(--text-muted) focus:border-(--secondary) focus:ring-2 focus:ring-(--secondary)/10"
@@ -250,7 +300,6 @@ const SignUp = () => {
                                     id="email"
                                     name="email"
                                     type="email"
-                                    required
                                     placeholder="you@example.com"
                                     autoComplete="email"
                                     className="w-full rounded-xl border border-(--border) bg-(--main-bg) py-2.5 pr-4 pl-11 text-sm text-(--text-primary) outline-none transition-all placeholder:text-(--text-muted) focus:border-(--secondary) focus:ring-2 focus:ring-(--secondary)/10"
@@ -276,14 +325,13 @@ const SignUp = () => {
                                 <input
                                     id="password"
                                     name="password"
-                                    required
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Create a password"
                                     autoComplete="new-password"
                                     onChange={(e) => {
-                                        if (e.target.value.length >= 8) {
-                                            setPasswordError("");
-                                        }
+                                        setPasswordError(
+                                            validatePassword(e.target.value)
+                                        );
                                     }}
                                     className="w-full rounded-xl border border-(--border) bg-(--main-bg) py-2.5 pr-12 pl-11 text-sm text-(--text-primary) outline-none transition-all placeholder:text-(--text-muted) focus:border-(--secondary) focus:ring-2 focus:ring-(--secondary)/10"
                                 />
@@ -297,6 +345,13 @@ const SignUp = () => {
                                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
+
+                            {/* Inline Password Error */}
+                            {passwordError && (
+                                <p className="mt-1.5 text-xs text-red-500">
+                                    {passwordError}
+                                </p>
+                            )}
                         </div>
 
                         {/* Confirm Password */}
@@ -317,7 +372,6 @@ const SignUp = () => {
                                 <input
                                     id="confirmPassword"
                                     name="confirmPassword"
-                                    required
                                     type={showConfirmPassword ? "text" : "password"}
                                     placeholder="Confirm your password"
                                     autoComplete="new-password"
@@ -352,13 +406,6 @@ const SignUp = () => {
                             <ArrowRight size={17} />
                         </button>
                     </form>
-
-                    {/* Password Error - Form এর নিচে */}
-                    {passwordError && (
-                        <p className="mt-2 text-center text-sm text-red-500">
-                            {passwordError}
-                        </p>
-                    )}
 
                     {/* Sign In Link */}
                     <p className="mt-5 text-center text-sm text-(--text-muted)">
