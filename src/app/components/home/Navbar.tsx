@@ -14,19 +14,23 @@ import { signOut } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 import { useAuth } from "@/app/context/AuthContext";
 
-const links = [
-  { name: "Home", href: "/" },
-  { name: "All Books", href: "/all-books" },
-  { name: "Add Book", href: "/add-book" },
-  { name: "My Books", href: "/my-books" },
-  { name: "My Borrows", href: "/my-borrows" },
-];
-
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
   const { user, isPending, isAuthenticated } = useAuth();
+
+  const links = [
+  { name: "Home", href: "/" },
+  { name: "All Books", href: "/all-books" },
+  ...(isAuthenticated
+    ? [
+        { name: "Add Book", href: "/add-book" },
+        { name: "My Books", href: "/my-books" },
+        { name: "My Borrows", href: "/my-borrows" },
+      ]
+    : []),
+];
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
